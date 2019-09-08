@@ -18,3 +18,33 @@ yarn start --project path/to/ts/project/to/analyze
 
 - Dependency graph generation
 - Cyclic dependency detection
+
+## Run `tssa` on `tssa`
+
+Printed dependency graph:
+
+```text
+{ 'src/index.ts': [ 'src/dependency-analysis/index.ts' ],
+  'src/dependency-analysis/dependency-analyzer.ts': [ 'src/dependency-analysis/types.ts' ],
+  'src/dependency-analysis/dependency-graph-builder.ts': [ 'src/dependency-analysis/types.ts' ],
+  'src/dependency-analysis/graphviz-helper.ts': [ 'src/dependency-analysis/types.ts' ],
+  'src/dependency-analysis/index.ts':
+   [ 'src/dependency-analysis/dependency-graph-builder.ts',
+     'src/dependency-analysis/simplifier.ts',
+     'src/dependency-analysis/dependency-analyzer.ts',
+     'src/dependency-analysis/graphviz-helper.ts',
+     'src/dependency-analysis/types.ts' ],
+  'src/dependency-analysis/simplifier.ts': [ 'src/dependency-analysis/types.ts' ],
+  'src/dependency-analysis/types.ts': [] }
+
+{ src: [ 'src/dependency-analysis' ],
+  'src/dependency-analysis': [] }
+```
+
+Module dependency graph:
+
+![Module dependency graph](./module-graph.png)
+
+Directory dependency graph:
+
+![Directory dependency graph](./directory-graph.png)

@@ -4,6 +4,3 @@
 # Build
 node_modules/
 dist/
-
-# Generated
-*.png
