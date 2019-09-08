@@ -1,5 +1,7 @@
 # tssa
 
+![Build Status](https://github.com/SamChou19815/tssa/workflows/CI/badge.svg)
+
 TypeScript Static Analyzer
 
 ## Getting Started
