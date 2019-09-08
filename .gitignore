@@ -1,0 +1,9 @@
+# System Files
+.DS_Store
+
+# Build
+node_modules/
+dist/
+
+# Generated
+*.png
