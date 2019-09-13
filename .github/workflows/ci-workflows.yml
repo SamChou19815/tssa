@@ -16,3 +16,12 @@ jobs:
         run: yarn lint
       - name: Build
         run: yarn build
+      - name: Rebuild Graphs
+        run: |
+          yarn dev --project .
+          if [[ `git status --porcelain` ]]; then
+            echo "Generated graphs are not in sync!"
+            exit 1
+          else
+            echo "Generated graphs are in sync. Good to go!"
+          fi
