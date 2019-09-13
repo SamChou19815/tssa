@@ -23,10 +23,7 @@ export default (graph: Graph): Graph => {
     const basePath = getBasePathWithoutExtension(fullPath);
     basePathCount.set(basePath, (basePathCount.get(basePath) || 0) + 1);
   };
-  Object.entries(graph).forEach(([keyFullPath, fullPathImports]) => {
-    countBasePath(keyFullPath);
-    fullPathImports.forEach(countBasePath);
-  });
+  Object.keys(graph).forEach(countBasePath);
   const simplifyPath = (fullPath: string): string => {
     const basePath = getBasePathWithoutExtension(fullPath);
     return (basePathCount.get(basePath) || 0) > 1 ? fullPath : basePath;
