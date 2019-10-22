@@ -14,7 +14,7 @@
   "main": "dist/index.js",
   "dependencies": {
     "graphviz": "^0.0.9",
-    "ts-morph": "^4.3.1",
+    "ts-morph": "^4.3.2",
     "typescript": "^3.6.4",
     "yargs": "^14.2.0"
   },
