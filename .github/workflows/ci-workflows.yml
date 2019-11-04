@@ -13,6 +13,6 @@ jobs:
       - name: Prettier
         run: yarn prettier:check
       - name: Lint
-        run: yarn lint || echo "Disable linter for now to enable Yarn V2"
+        run: yarn lint
       - name: Build
         run: yarn build
