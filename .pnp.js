@@ -105,7 +105,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["prettier", "npm:1.18.2"],
             ["ts-morph", "npm:4.3.2"],
             ["ts-node", "virtual:7296bd735ca3773116d8c08a968ff80587248de316ff1384553eddc548175eb3937158fb2a83cfda91b447a239b51c097520287bac4c654cae18365513e76c13#npm:8.4.1"],
-            ["typescript", "npm:3.6.4"],
+            ["typescript", "npm:3.7.2"],
             ["yargs", "npm:14.2.1"]
           ],
           "linkType": "SOFT"
@@ -272,7 +272,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["functional-red-black-tree", "npm:1.0.1"],
             ["regexpp", "npm:2.0.1"],
             ["tsutils", "virtual:ecb1b8f6be2f5f29977e865225c5dd9c3d9cc6d94cd836a26c5fef9c5900590fefc5d5310fcf7fade4ce3e2bf0a268e998271bceaaa4f2975344ccfb504b8dfa#npm:3.17.1"],
-            ["typescript", "npm:3.6.4"]
+            ["typescript", "npm:3.7.2"]
           ],
           "packagePeers": [
             "parser",
@@ -322,7 +322,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@typescript-eslint/typescript-estree", "virtual:a2868960b72642691691b33303d34b167f2507b4ef50ce2e7c7ceb9b8273c5f8bc500dfc69494589426bbb328fc31a4e8dec5ea26e90096a8101c2ca91e593ce#npm:2.6.1"],
             ["eslint", "npm:6.6.0"],
             ["eslint-visitor-keys", "npm:1.1.0"],
-            ["typescript", "npm:3.6.4"]
+            ["typescript", "npm:3.7.2"]
           ],
           "packagePeers": [
             "eslint",
@@ -376,7 +376,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["lodash.unescape", "npm:4.0.1"],
             ["semver", "npm:6.3.0"],
             ["tsutils", "virtual:dfcae1012971d78856bc1c572eb28a378a1543995524d030b77390fc8742bf7b3bd7c1e3de66cee03af5fc56fa9576fd73b1a72edfcc95fa0b83322ad24bf521#npm:3.17.1"],
-            ["typescript", "npm:3.6.4"]
+            ["typescript", "npm:3.7.2"]
           ],
           "packagePeers": [
             "typescript"
@@ -413,7 +413,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["comment-json", "npm:2.2.0"],
             ["cross-spawn", "npm:6.0.5"],
             ["eslint", "npm:6.6.0"],
-            ["typescript", "npm:3.6.4"]
+            ["typescript", "npm:3.7.2"]
           ],
           "packagePeers": [
             "eslint",
@@ -2670,7 +2670,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["diff", "npm:4.0.1"],
             ["make-error", "npm:1.3.5"],
             ["source-map-support", "npm:0.5.16"],
-            ["typescript", "npm:3.6.4"],
+            ["typescript", "npm:3.7.2"],
             ["yn", "npm:3.1.1"]
           ],
           "packagePeers": [
@@ -2708,7 +2708,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["prettier", "npm:1.18.2"],
             ["ts-morph", "npm:4.3.2"],
             ["ts-node", "virtual:7296bd735ca3773116d8c08a968ff80587248de316ff1384553eddc548175eb3937158fb2a83cfda91b447a239b51c097520287bac4c654cae18365513e76c13#npm:8.4.1"],
-            ["typescript", "npm:3.6.4"],
+            ["typescript", "npm:3.7.2"],
             ["yargs", "npm:14.2.1"]
           ],
           "linkType": "SOFT"
@@ -2744,7 +2744,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [
             ["tsutils", "virtual:dfcae1012971d78856bc1c572eb28a378a1543995524d030b77390fc8742bf7b3bd7c1e3de66cee03af5fc56fa9576fd73b1a72edfcc95fa0b83322ad24bf521#npm:3.17.1"],
             ["tslib", "npm:1.10.0"],
-            ["typescript", "npm:3.6.4"]
+            ["typescript", "npm:3.7.2"]
           ],
           "packagePeers": [
             "typescript"
@@ -2756,7 +2756,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [
             ["tsutils", "virtual:ecb1b8f6be2f5f29977e865225c5dd9c3d9cc6d94cd836a26c5fef9c5900590fefc5d5310fcf7fade4ce3e2bf0a268e998271bceaaa4f2975344ccfb504b8dfa#npm:3.17.1"],
             ["tslib", "npm:1.10.0"],
-            ["typescript", "npm:3.6.4"]
+            ["typescript", "npm:3.7.2"]
           ],
           "packagePeers": [
             "typescript"
@@ -2788,6 +2788,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/typescript-npm-3.6.4-ee51356bf5-1.zip/node_modules/typescript/",
           "packageDependencies": [
             ["typescript", "npm:3.6.4"]
+          ],
+          "linkType": "HARD"
+        }],
+        ["npm:3.7.2", {
+          "packageLocation": "./.yarn/cache/typescript-npm-3.7.2-54d8818186-1.zip/node_modules/typescript/",
+          "packageDependencies": [
+            ["typescript", "npm:3.7.2"]
           ],
           "linkType": "HARD"
         }]
