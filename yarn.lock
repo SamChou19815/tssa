@@ -61,6 +61,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ts-morph/common@npm:~0.1.0":
+  version: 0.1.0
+  resolution: "@ts-morph/common@npm:0.1.0"
+  dependencies:
+    "@dsherret/to-absolute-glob": "npm:^2.0.2"
+    fs-extra: "npm:^8.1.0"
+    glob-parent: "npm:^5.1.0"
+    globby: "npm:^10.0.1"
+    is-negated-glob: "npm:^1.0.0"
+    multimatch: "npm:^4.0.0"
+    typescript: "npm:~3.7.2"
+  checksum: 3f2eb99b0f47fcdf14512f5d186103fb9b99fb55d6950d357d02c35d128ae747b778d0ec20c736cb95dae8fbb9d706a9d032e45b747bdac930ead6e1427cfd93
+  languageName: node
+  linkType: hard
+
 "@types/eslint-visitor-keys@npm:^1.0.0":
   version: 1.0.0
   resolution: "@types/eslint-visitor-keys@npm:1.0.0"
@@ -107,10 +122,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^12.12.5":
+"@types/node@npm:*":
   version: 12.12.5
   resolution: "@types/node@npm:12.12.5"
   checksum: e13a555687a2692711dff6939ed1f614ce437075fe9d164fabc2ffd4aa0448b01e649ccf48150eb388199dbef97a89fa16f34a0d6e4ec60fe9f936577ddb219c
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^12.12.7":
+  version: 12.12.7
+  resolution: "@types/node@npm:12.12.7"
+  checksum: 722e28a9351b580683e052a10c76d201510820da4da67cf1b6a6db81a6c3b6da50f2f6c1f31010224e5e06c8cb22143191e14411e66c674bbc6aa07817512229
   languageName: node
   linkType: hard
 
@@ -1770,12 +1792,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:1.18.2":
-  version: 1.18.2
-  resolution: "prettier@npm:1.18.2"
+"prettier@npm:1.19.0":
+  version: 1.19.0
+  resolution: "prettier@npm:1.19.0"
   bin:
     prettier: ./bin-prettier.js
-  checksum: c24821fb6ef7501afd24a2ac5818f4dd3583342f5a433e45e34a489fc61c3799f15ae52911d317b53dcafa74f56d6386341f22c70546db81470b14903c8e9850
+  checksum: de342102bc251a911a3abcf0a23083b9baf9edcbb137cc958a1fa3362b1e83eb0e9355d73017790f4a38cc91748fcc78e40bb2aba1905f49d1e76cbbff413887
   languageName: node
   linkType: hard
 
@@ -2167,20 +2189,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-morph@npm:^4.3.2":
-  version: 4.3.2
-  resolution: "ts-morph@npm:4.3.2"
+"ts-morph@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "ts-morph@npm:5.0.0"
   dependencies:
     "@dsherret/to-absolute-glob": "npm:^2.0.2"
-    chalk: "npm:^2.4.2"
+    "@ts-morph/common": "npm:~0.1.0"
     code-block-writer: "npm:^10.0.0"
-    fs-extra: "npm:^8.1.0"
-    glob-parent: "npm:^5.1.0"
-    globby: "npm:^10.0.1"
-    is-negated-glob: "npm:^1.0.0"
-    multimatch: "npm:^4.0.0"
-    typescript: "npm:^3.0.1"
-  checksum: 8070d46655d611434860d2881de4e02245bfe81889aba5a7b75c478571b5f4f4308511d22f7e0e414b3baf02d1ea33240de311516bf665713df7a03f063c6e22
+  checksum: cab8f41faa599038a92484a15539c0235e930cce64a6a776bed5f3f95fb5c287a409896e73f30f077f4a2d19e1542db7bcef988a69192b92877c806bc6b2d7f2
   languageName: node
   linkType: hard
 
@@ -2213,7 +2229,7 @@ __metadata:
   resolution: "tssa@workspace:."
   dependencies:
     "@types/graphviz": "npm:^0.0.30"
-    "@types/node": "npm:^12.12.5"
+    "@types/node": "npm:^12.12.7"
     "@types/yargs": "npm:^13.0.3"
     "@typescript-eslint/eslint-plugin": "npm:^2.6.1"
     "@typescript-eslint/parser": "npm:^2.6.1"
@@ -2224,8 +2240,8 @@ __metadata:
     eslint-import-resolver-node: "npm:^0.3.2"
     eslint-plugin-import: "npm:^2.18.2"
     graphviz: "npm:^0.0.9"
-    prettier: "npm:1.18.2"
-    ts-morph: "npm:^4.3.2"
+    prettier: "npm:1.19.0"
+    ts-morph: "npm:^5.0.0"
     ts-node: "npm:^8.4.1"
     typescript: "npm:^3.7.2"
     yargs: "npm:^14.2.0"
@@ -2259,17 +2275,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^3.0.1":
-  version: 3.6.4
-  resolution: "typescript@npm:3.6.4"
-  bin:
-    tsc: ./bin/tsc
-    tsserver: ./bin/tsserver
-  checksum: 261beb88a53ac4b97eb66a2cce8be15edf7720b1661ad9d0223e0a3db06697a506c8941882ac49c577ec2e56ce596c71c268644f3ef9009df15baa4a66c3ccf0
-  languageName: node
-  linkType: hard
-
-"typescript@npm:^3.7.2":
+"typescript@npm:^3.7.2, typescript@npm:~3.7.2":
   version: 3.7.2
   resolution: "typescript@npm:3.7.2"
   bin:

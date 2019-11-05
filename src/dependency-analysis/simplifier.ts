@@ -21,12 +21,12 @@ export default (graph: Graph): Graph => {
   const basePathCount = new Map<string, number>();
   const countBasePath = (fullPath: string): void => {
     const basePath = getBasePathWithoutExtension(fullPath);
-    basePathCount.set(basePath, (basePathCount.get(basePath) || 0) + 1);
+    basePathCount.set(basePath, (basePathCount.get(basePath) ?? 0) + 1);
   };
   Object.keys(graph).forEach(countBasePath);
   const simplifyPath = (fullPath: string): string => {
     const basePath = getBasePathWithoutExtension(fullPath);
-    return (basePathCount.get(basePath) || 0) > 1 ? fullPath : basePath;
+    return (basePathCount.get(basePath) ?? 0) > 1 ? fullPath : basePath;
   };
   const simplifiedGraph: Graph = {};
   Object.entries(graph).forEach(([key, imports]) => {
