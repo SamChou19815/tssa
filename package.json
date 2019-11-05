@@ -15,15 +15,15 @@
   "dependencies": {
     "graphviz": "^0.0.9",
     "ts-morph": "^4.3.2",
-    "typescript": "^3.6.4",
+    "typescript": "^3.7.2",
     "yargs": "^14.2.0"
   },
   "devDependencies": {
     "@types/graphviz": "^0.0.30",
-    "@types/node": "^12.11.7",
+    "@types/node": "^12.12.5",
     "@types/yargs": "^13.0.3",
-    "@typescript-eslint/eslint-plugin": "^2.6.0",
-    "@typescript-eslint/parser": "^2.6.0",
+    "@typescript-eslint/eslint-plugin": "^2.6.1",
+    "@typescript-eslint/parser": "^2.6.1",
     "@yarnpkg/pnpify": "^2.0.0-rc.7",
     "eslint": "^6.6.0",
     "eslint-config-airbnb-base": "^14.0.0",

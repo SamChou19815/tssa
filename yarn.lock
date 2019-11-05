@@ -107,7 +107,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^12.11.7":
+"@types/node@npm:*, @types/node@npm:^12.12.5":
   version: 12.12.5
   resolution: "@types/node@npm:12.12.5"
   checksum: e13a555687a2692711dff6939ed1f614ce437075fe9d164fabc2ffd4aa0448b01e649ccf48150eb388199dbef97a89fa16f34a0d6e4ec60fe9f936577ddb219c
@@ -130,7 +130,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/eslint-plugin@npm:^2.6.0":
+"@typescript-eslint/eslint-plugin@npm:^2.6.1":
   version: 2.6.1
   resolution: "@typescript-eslint/eslint-plugin@npm:2.6.1"
   dependencies:
@@ -163,7 +163,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:^2.6.0":
+"@typescript-eslint/parser@npm:^2.6.1":
   version: 2.6.1
   resolution: "@typescript-eslint/parser@npm:2.6.1"
   dependencies:
@@ -2213,10 +2213,10 @@ __metadata:
   resolution: "tssa@workspace:."
   dependencies:
     "@types/graphviz": "npm:^0.0.30"
-    "@types/node": "npm:^12.11.7"
+    "@types/node": "npm:^12.12.5"
     "@types/yargs": "npm:^13.0.3"
-    "@typescript-eslint/eslint-plugin": "npm:^2.6.0"
-    "@typescript-eslint/parser": "npm:^2.6.0"
+    "@typescript-eslint/eslint-plugin": "npm:^2.6.1"
+    "@typescript-eslint/parser": "npm:^2.6.1"
     "@yarnpkg/pnpify": "npm:^2.0.0-rc.7"
     eslint: "npm:^6.6.0"
     eslint-config-airbnb-base: "npm:^14.0.0"
@@ -2227,7 +2227,7 @@ __metadata:
     prettier: "npm:1.18.2"
     ts-morph: "npm:^4.3.2"
     ts-node: "npm:^8.4.1"
-    typescript: "npm:^3.6.4"
+    typescript: "npm:^3.7.2"
     yargs: "npm:^14.2.0"
   languageName: unknown
   linkType: soft
@@ -2259,13 +2259,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^3.0.1, typescript@npm:^3.6.4":
+"typescript@npm:^3.0.1":
   version: 3.6.4
   resolution: "typescript@npm:3.6.4"
   bin:
     tsc: ./bin/tsc
     tsserver: ./bin/tsserver
   checksum: 261beb88a53ac4b97eb66a2cce8be15edf7720b1661ad9d0223e0a3db06697a506c8941882ac49c577ec2e56ce596c71c268644f3ef9009df15baa4a66c3ccf0
+  languageName: node
+  linkType: hard
+
+"typescript@npm:^3.7.2":
+  version: 3.7.2
+  resolution: "typescript@npm:3.7.2"
+  bin:
+    tsc: ./bin/tsc
+    tsserver: ./bin/tsserver
+  checksum: a68572cac7e18b5338b2e87ba7f2ecbae43b339606cd1f150b325f4c88314067c036ad3746c351879ff7da2fcedd1bcefa6e7fb9b181496debfae3430766b8fe
   languageName: node
   linkType: hard
 
