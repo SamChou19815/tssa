@@ -14,13 +14,13 @@
   "main": "dist/index.js",
   "dependencies": {
     "graphviz": "^0.0.9",
-    "ts-morph": "^4.3.2",
+    "ts-morph": "^5.0.0",
     "typescript": "^3.7.2",
     "yargs": "^14.2.0"
   },
   "devDependencies": {
     "@types/graphviz": "^0.0.30",
-    "@types/node": "^12.12.5",
+    "@types/node": "^12.12.7",
     "@types/yargs": "^13.0.3",
     "@typescript-eslint/eslint-plugin": "^2.6.1",
     "@typescript-eslint/parser": "^2.6.1",
@@ -30,7 +30,7 @@
     "eslint-config-prettier": "^6.5.0",
     "eslint-import-resolver-node": "^0.3.2",
     "eslint-plugin-import": "^2.18.2",
-    "prettier": "1.18.2",
+    "prettier": "1.19.0",
     "ts-node": "^8.4.1"
   }
 }
