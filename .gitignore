@@ -1,6 +1,12 @@
 # System Files
 .DS_Store
 
+# Yarn
+.yarn
+
+# IDE
+.vscode
+
 # Build
 node_modules/
 dist/
