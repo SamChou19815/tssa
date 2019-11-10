@@ -3,6 +3,7 @@
 
 # Yarn
 .yarn
+.yarnrc
 
 # IDE
 .vscode
