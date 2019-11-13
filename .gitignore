@@ -4,6 +4,7 @@
 # Yarn
 .yarn
 .yarnrc
+.pnp.js
 
 # IDE
 .vscode
