@@ -2,7 +2,6 @@
 .DS_Store
 
 # Yarn
-.yarn/cache
 .yarn/unplugged
 .yarn/build-state.yml
 .pnp.*
