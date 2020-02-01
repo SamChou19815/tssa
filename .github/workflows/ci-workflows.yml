@@ -14,12 +14,10 @@ jobs:
           path: .yarn/
           key: yarn-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
           restore-keys: yarn-
-      - name: Setup Yarn v2
-        run: yarn policies set-version v2
       - name: Yarn Install
         run: yarn install
       - name: Prettier
-        run: yarn prettier:check
+        run: yarn format:check
       - name: Lint
         run: yarn lint
       - name: Build

@@ -5,28 +5,28 @@
   "license": "MIT",
   "scripts": {
     "start": "node dist/index.js",
-    "prettier": "prettier --write '**/*.ts'",
-    "prettier:check": "prettier --check '**/*.ts'",
+    "format": "prettier --write '**/*.ts'",
+    "format:check": "prettier --check '**/*.ts'",
     "lint": "eslint . --ext .ts",
-    "build": "pnpify tsc"
+    "build": "tsc"
   },
   "main": "dist/index.js",
   "dependencies": {
     "graphviz": "^0.0.9",
     "ts-morph": "^6.0.2",
-    "typescript": "^3.7.4",
+    "typescript": "^3.7.5",
     "yargs": "^15.1.0"
   },
   "devDependencies": {
     "@types/graphviz": "^0.0.30",
-    "@types/node": "^13.1.7",
-    "@types/yargs": "^15.0.0",
-    "@typescript-eslint/eslint-plugin": "^2.16.0",
-    "@typescript-eslint/parser": "^2.16.0",
+    "@types/node": "^13.7.0",
+    "@types/yargs": "^15.0.3",
+    "@typescript-eslint/eslint-plugin": "^2.18.0",
+    "@typescript-eslint/parser": "^2.18.0",
     "@yarnpkg/pnpify": "^2.0.0-rc.14",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-config-prettier": "^6.9.0",
+    "eslint-config-prettier": "^6.10.0",
     "eslint-import-resolver-node": "^0.3.3",
     "eslint-plugin-import": "^2.20.0",
     "prettier": "1.19.1"

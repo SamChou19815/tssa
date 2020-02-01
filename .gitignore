@@ -2,9 +2,10 @@
 .DS_Store
 
 # Yarn
-.yarn
-.yarnrc
-.pnp.js
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.pnp.*
 
 # IDE
 .vscode
