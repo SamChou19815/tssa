@@ -204,30 +204,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@yarnpkg/fslib@npm:^2.0.0-rc.12":
-  version: 2.0.0-rc.14
-  resolution: "@yarnpkg/fslib@npm:2.0.0-rc.14"
+"@yarnpkg/fslib@npm:^2.0.0-rc.15":
+  version: 2.0.0-rc.15
+  resolution: "@yarnpkg/fslib@npm:2.0.0-rc.15"
   dependencies:
-    "@yarnpkg/libzip": ^2.0.0-rc.5
+    "@yarnpkg/libzip": ^2.0.0-rc.8
     tmp: ^0.1.0
-  checksum: b6f1bb9dc92d4275c3ec491568b96eb3deeabbd0e242f9dd6fc30141c2b8fae2139d0953c52f0a88cca967eebeb4645ffc474a3987d3e55e7380672547a8761c
+  checksum: 5ca7045c6802038d20744a8c1d8da8bc8c433239932f9ab7ece93554614b2d7d1b0d4fcabc341a84911977b55d91997c6eb273cd83b07e5931e7301daba2eee7
   languageName: node
   linkType: hard
 
-"@yarnpkg/libzip@npm:^2.0.0-rc.5":
-  version: 2.0.0-rc.7
-  resolution: "@yarnpkg/libzip@npm:2.0.0-rc.7"
-  checksum: bc7756557672a6612f86d82911838701753912da21f32e0350dde423dd04affa3731aeb37821d1bab0e50af7d266de9dfa9e3502b56d0e0dd9fd5802fa809acd
+"@yarnpkg/libzip@npm:^2.0.0-rc.8":
+  version: 2.0.0-rc.9
+  resolution: "@yarnpkg/libzip@npm:2.0.0-rc.9"
+  checksum: 801f8b2a1e86cc4b8c162de16192b9c799f6108bd5350865892121be84b3f864b9c609f3481d1b1f5b9ce63db2cd17e8cc830031103760784ccb5a8e0123e4a4
   languageName: node
   linkType: hard
 
-"@yarnpkg/pnpify@npm:^2.0.0-rc.14":
-  version: 2.0.0-rc.14
-  resolution: "@yarnpkg/pnpify@npm:2.0.0-rc.14"
+"@yarnpkg/pnpify@npm:^2.0.0-rc.17":
+  version: 2.0.0-rc.17
+  resolution: "@yarnpkg/pnpify@npm:2.0.0-rc.17"
   dependencies:
-    "@yarnpkg/fslib": ^2.0.0-rc.12
+    "@yarnpkg/fslib": ^2.0.0-rc.15
     comment-json: ^2.2.0
-    cross-spawn: ^6.0.5
+    cross-spawn: 6.0.5
   peerDependencies:
     eslint: "*"
     typescript: "*"
@@ -238,7 +238,7 @@ __metadata:
       optional: true
   bin:
     pnpify: ./lib/cli.js
-  checksum: 7f5576b615eba6af147d80f00ad9cce244822e579f1221a0b357d1dc28dcecaa97d37226a1be52e223e16f9450b716ce1b15dbe27fd16cba80d895514a5f20d2
+  checksum: 2c475d35a82fa71f27ed7f8f4751606cd28fcea6b89fbcfec18eaa4684cc956130c7349c58870c667dbcf320a30ab9b14a56a6b7d8b3c30c63d4f5b92a9b9d06
   languageName: node
   linkType: hard
 
@@ -535,7 +535,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-spawn@npm:^6.0.5":
+"cross-spawn@npm:6.0.5, cross-spawn@npm:^6.0.5":
   version: 6.0.5
   resolution: "cross-spawn@npm:6.0.5"
   dependencies:
@@ -2230,7 +2230,7 @@ resolve@^1.13.1:
     "@types/yargs": ^15.0.3
     "@typescript-eslint/eslint-plugin": ^2.18.0
     "@typescript-eslint/parser": ^2.18.0
-    "@yarnpkg/pnpify": ^2.0.0-rc.14
+    "@yarnpkg/pnpify": ^2.0.0-rc.17
     eslint: ^6.8.0
     eslint-config-airbnb-base: ^14.0.0
     eslint-config-prettier: ^6.10.0
