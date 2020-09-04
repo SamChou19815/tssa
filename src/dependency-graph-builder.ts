@@ -6,7 +6,19 @@ const getImports = (projectDirectory: string, sourceFile: SourceFile): readonly 
   const imports: string[] = [];
   sourceFile.getImportDeclarations().forEach((oneImport) => {
     const importedSourceFile = oneImport.getModuleSpecifierSourceFile();
+
     if (importedSourceFile === undefined) {
+      // Not useless, might be css module!
+      let rawImportedModuleText = oneImport.getModuleSpecifier().getText(false);
+      rawImportedModuleText = rawImportedModuleText.slice(1, rawImportedModuleText.length - 1);
+      if (!rawImportedModuleText.endsWith('.css')) {
+        return;
+      }
+      const resolvedCssSourceFilePath = path.resolve(
+        path.dirname(sourceFile.getFilePath()),
+        rawImportedModuleText
+      );
+      imports.push(path.relative(projectDirectory, resolvedCssSourceFilePath));
       return;
     }
     const filePath = importedSourceFile.getFilePath();

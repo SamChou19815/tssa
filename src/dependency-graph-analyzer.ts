@@ -19,11 +19,8 @@ const getDependencyChainForTSModule = (graph: Graph, tsModule: string): readonly
       throw new Error(`Cyclic dependency detected: ${cyclicDependencyChain}`);
     }
 
-    // Check dependencies.
-    const moduleDependencies = graph[node];
-    if (moduleDependencies == null) return;
-
     // Visit dependencies
+    const moduleDependencies = graph[node] ?? [];
     allVisited.add(node);
     parentChain.push(node);
     parentSet.add(node);
