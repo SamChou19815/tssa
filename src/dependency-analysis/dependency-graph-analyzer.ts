@@ -1,88 +1,65 @@
 import type { Graph } from './dependency-graph-types';
 
-const constructDependencyChain = (
-  graph: Graph,
-  node: string,
-  dependencyChain: string[],
-  parentChain: string[],
-  parentSet: Set<string>,
-  allVisited: Set<string>,
-  cyclicDependencyProblems: string[]
-): void => {
-  // Check cyclic dependencies
-  if (allVisited.has(node)) {
-    if (!parentSet.has(node)) {
-      // We reach the end of the chain because we have visited it before.
-      return;
-    }
-    parentChain.push(node);
-    const firstIndex = parentChain.findIndex((parentNode) => parentNode === node);
-    const cyclicDependencyChain = parentChain.slice(firstIndex).join(' -> ');
-    cyclicDependencyProblems.push(cyclicDependencyChain);
-    return;
-  }
-  const dependencies = graph[node] ?? [];
-  // Visit dependencies
-  allVisited.add(node);
-  parentChain.push(node);
-  parentSet.add(node);
-  dependencies.forEach((dependencyNode) =>
-    constructDependencyChain(
-      graph,
-      dependencyNode,
-      dependencyChain,
-      parentChain,
-      parentSet,
-      allVisited,
-      cyclicDependencyProblems
-    )
-  );
-  parentSet.delete(node);
-  parentChain.pop();
-  dependencyChain.push(node);
-};
-
-const dependencyChainBuilder = (graph: Graph): readonly string[] => {
-  const importedCounter = new Map<string, number>();
-  Object.entries(graph).forEach(([key, imports]) => {
-    importedCounter.set(key, importedCounter.get(key) ?? 0);
-    imports.forEach((oneImport) => {
-      importedCounter.set(oneImport, (importedCounter.get(oneImport) ?? 0) + 1);
-    });
-  });
+const getDependencyChainForTSModule = (graph: Graph, tsModule: string): readonly string[] => {
   const dependencyChain: string[] = [];
-  const cyclicDependencyProblems: string[] = [];
-  const allVisited: Set<string> = new Set();
-  importedCounter.forEach((count, node) => {
-    if (count === 0) {
-      constructDependencyChain(
-        graph,
-        node,
-        dependencyChain,
-        [],
-        new Set(),
-        allVisited,
-        cyclicDependencyProblems
-      );
+  const parentChain: string[] = [];
+  const parentSet = new Set<string>();
+  const allVisited = new Set<string>();
+
+  const visit = (node: string): void => {
+    // Check cyclic dependencies.
+    if (allVisited.has(node)) {
+      if (!parentSet.has(node)) {
+        // We reach the end of the chain because we have visited it before.
+        return;
+      }
+      parentChain.push(node);
+      const firstIndex = parentChain.indexOf(node);
+      const cyclicDependencyChain = parentChain.slice(firstIndex, parentChain.length).join(' -> ');
+      throw new Error(`Cyclic dependency detected: ${cyclicDependencyChain}`);
     }
-  });
-  Object.keys(graph).forEach((node) => {
-    if (!allVisited.has(node)) {
-      constructDependencyChain(
-        graph,
-        node,
-        dependencyChain,
-        [],
-        new Set(),
-        allVisited,
-        cyclicDependencyProblems
-      );
+
+    // Check dependencies.
+    const moduleDependencies = graph[node];
+    if (moduleDependencies == null) {
+      throw new Error(`Module ${node} is not found!`);
     }
-  });
-  if (cyclicDependencyProblems.length > 0) {
-    throw new Error(`Cyclic dependencies: ${cyclicDependencyProblems.join(', ')}`);
-  }
+
+    // Visit dependencies
+    allVisited.add(node);
+    parentChain.push(node);
+    parentSet.add(node);
+    moduleDependencies.forEach(visit);
+    parentSet.delete(node);
+    parentChain.pop();
+    dependencyChain.push(node);
+  };
+
+  visit(tsModule);
   return dependencyChain;
 };
 
-export default dependencyChainBuilder;
+export const getTopologicallyOrderedTransitiveDependencyChainFromTSModules = (
+  graph: Graph,
+  tsModules: readonly string[]
+): readonly string[] => {
+  const sorted: string[] = [];
+  const set = new Set<string>();
+
+  tsModules.forEach((tsModule) => {
+    const oneDependencyChainSorted = getDependencyChainForTSModule(graph, tsModule);
+    oneDependencyChainSorted.forEach((moduleName) => {
+      if (!set.has(moduleName)) {
+        sorted.push(moduleName);
+        set.add(moduleName);
+      }
+    });
+  });
+
+  return sorted;
+};
+
+export const getGlobalTopologicallyOrderedTransitiveDependencyChain = (
+  graph: Graph
+): readonly string[] =>
+  getTopologicallyOrderedTransitiveDependencyChainFromTSModules(graph, Object.keys(graph));
