@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "dist",
+    "importsNotUsedAsValues": "error",
     "lib": ["dom", "esnext"]
   },
   "include": ["src"]
