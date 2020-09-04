@@ -12,4 +12,6 @@ cd tssa
 yarn
 yarn build
 yarn start path/to/ts/project/to/analyze
+# using output from git
+yarn start path/to/ts/project/to/analyze $(git diff HEAD^ HEAD --name-only)
 ```
