@@ -3,7 +3,10 @@ import {
   getTopologicallyOrderedTransitiveDependencyChainFromTSModules,
   getGlobalTopologicallyOrderedTransitiveDependencyChain,
 } from './dependency-graph-analyzer';
-import buildDependencyGraph from './dependency-graph-builder';
+import {
+  buildDependencyGraph,
+  buildReverseDependencyGraphFromDependencyGraph,
+} from './dependency-graph-builder';
 
 function main(): void {
   const projectDirectory = process.argv[2];
@@ -14,14 +17,33 @@ function main(): void {
     return;
   }
 
-  const graph = buildDependencyGraph(projectDirectory);
-  const dependencyChain =
-    queryPaths.length > 0
-      ? getTopologicallyOrderedTransitiveDependencyChainFromTSModules(graph, queryPaths)
-      : getGlobalTopologicallyOrderedTransitiveDependencyChain(graph);
+  const forwardDependencyGraph = buildDependencyGraph(projectDirectory);
+  const reverseDependencyGraph = buildReverseDependencyGraphFromDependencyGraph(
+    forwardDependencyGraph
+  );
 
-  console.log(graph);
-  console.log(dependencyChain);
+  let forwardDependencyChain: readonly string[];
+  let reverseDependencyChain: readonly string[];
+  if (queryPaths.length > 0) {
+    forwardDependencyChain = getTopologicallyOrderedTransitiveDependencyChainFromTSModules(
+      forwardDependencyGraph,
+      queryPaths
+    );
+    reverseDependencyChain = getTopologicallyOrderedTransitiveDependencyChainFromTSModules(
+      reverseDependencyGraph,
+      queryPaths
+    );
+  } else {
+    forwardDependencyChain = getGlobalTopologicallyOrderedTransitiveDependencyChain(
+      forwardDependencyGraph
+    );
+    reverseDependencyChain = getGlobalTopologicallyOrderedTransitiveDependencyChain(
+      reverseDependencyGraph
+    );
+  }
+
+  console.log(forwardDependencyChain);
+  console.log(reverseDependencyChain);
 }
 
 main();
