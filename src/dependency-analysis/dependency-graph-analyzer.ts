@@ -1,4 +1,4 @@
-import { Graph } from './dependency-graph-types';
+import type { Graph } from './dependency-graph-types';
 
 const constructDependencyChain = (
   graph: Graph,

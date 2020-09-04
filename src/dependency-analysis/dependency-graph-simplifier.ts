@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { Graph } from './dependency-graph-types';
+import type { Graph } from './dependency-graph-types';
 
 /**
  * A lot of modules's base path is unique. In those cases, it's better to only have the base path
