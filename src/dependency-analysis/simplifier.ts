@@ -9,7 +9,7 @@ import { Graph } from './types';
  * @returns simplified graph, where full paths are replaced by base path without extension if it
  * does not introduce ambiguity.
  */
-export default (graph: Graph): Graph => {
+const simplifyDependencyGraphWithDroppedExtensions = (graph: Graph): Graph => {
   const getBasePathWithoutExtension = (fullPath: string): string => {
     const basePath = path.basename(fullPath);
     const parts = basePath.split('.');
@@ -34,3 +34,5 @@ export default (graph: Graph): Graph => {
   });
   return simplifiedGraph;
 };
+
+export default simplifyDependencyGraphWithDroppedExtensions;
