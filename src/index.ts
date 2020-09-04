@@ -15,7 +15,7 @@ function main(): void {
   const [moduleGraph, directoryGraph] = dependencyAnalysis({
     projectDirectory,
     doesOutputGraph: true,
-    doesCheckCyclicDependencies: true
+    doesCheckCyclicDependencies: true,
   });
 
   console.log(moduleGraph);
