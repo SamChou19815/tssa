@@ -13,7 +13,7 @@ type Options = {
 export default ({
   projectDirectory,
   doesOutputGraph = false,
-  doesCheckCyclicDependencies = false
+  doesCheckCyclicDependencies = false,
 }: Options): [Graph, Graph] => {
   const rawGraph = buildGraph(projectDirectory);
   if (doesCheckCyclicDependencies) {

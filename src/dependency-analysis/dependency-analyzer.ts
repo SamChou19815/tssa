@@ -7,12 +7,12 @@ export const buildDirectoryDependencyGraph = (graph: Graph): Graph => {
     const newKey = dirname(key);
     const directoryImports = imports.map(dirname);
     const dependencies = directoryDependencyMap.get(newKey) ?? new Set();
-    directoryImports.forEach(oneImport => dependencies.add(oneImport));
+    directoryImports.forEach((oneImport) => dependencies.add(oneImport));
     directoryDependencyMap.set(newKey, dependencies);
   });
   const newGraph: Graph = {};
   directoryDependencyMap.forEach((dependencies, key) => {
-    newGraph[key] = Array.from(dependencies.values()).filter(dependency => dependency !== key);
+    newGraph[key] = Array.from(dependencies.values()).filter((dependency) => dependency !== key);
   });
   return newGraph;
 };
@@ -33,7 +33,7 @@ const constructDependencyChain = (
       return;
     }
     parentChain.push(node);
-    const firstIndex = parentChain.findIndex(parentNode => parentNode === node);
+    const firstIndex = parentChain.findIndex((parentNode) => parentNode === node);
     const cyclicDependencyChain = parentChain.slice(firstIndex).join(' -> ');
     cyclicDependencyProblems.push(cyclicDependencyChain);
     return;
@@ -43,7 +43,7 @@ const constructDependencyChain = (
   allVisited.add(node);
   parentChain.push(node);
   parentSet.add(node);
-  dependencies.forEach(dependencyNode =>
+  dependencies.forEach((dependencyNode) =>
     constructDependencyChain(
       graph,
       dependencyNode,
@@ -63,7 +63,7 @@ export const dependencyChainBuilder = (graph: Graph): readonly string[] => {
   const importedCounter = new Map<string, number>();
   Object.entries(graph).forEach(([key, imports]) => {
     importedCounter.set(key, importedCounter.get(key) ?? 0);
-    imports.forEach(oneImport => {
+    imports.forEach((oneImport) => {
       importedCounter.set(oneImport, (importedCounter.get(oneImport) ?? 0) + 1);
     });
   });
@@ -83,7 +83,7 @@ export const dependencyChainBuilder = (graph: Graph): readonly string[] => {
       );
     }
   });
-  Object.keys(graph).forEach(node => {
+  Object.keys(graph).forEach((node) => {
     if (!allVisited.has(node)) {
       constructDependencyChain(
         graph,
