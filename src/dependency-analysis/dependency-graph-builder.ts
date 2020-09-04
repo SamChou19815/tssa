@@ -18,7 +18,7 @@ const getImports = (projectDirectory: string, sourceFile: SourceFile): readonly 
   return imports;
 };
 
-export default (projectDirectory: string): Graph => {
+const buildDependencyGraph = (projectDirectory: string): Graph => {
   const project = new Project({
     tsConfigFilePath: `${projectDirectory}/tsconfig.json`,
   });
@@ -30,3 +30,5 @@ export default (projectDirectory: string): Graph => {
   });
   return graph;
 };
+
+export default buildDependencyGraph;

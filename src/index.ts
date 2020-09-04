@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import dependencyAnalysis from './dependency-analysis';
+import performDependencyAnalysisForProject from './dependency-analysis';
 
 function main(): void {
   const projectDirectory = process.argv[2];
@@ -9,16 +9,8 @@ function main(): void {
     return;
   }
 
-  const [moduleGraph, directoryGraph] = dependencyAnalysis({
-    projectDirectory,
-    doesOutputGraph: true,
-    doesCheckCyclicDependencies: true,
-  });
-
+  const moduleGraph = performDependencyAnalysisForProject(projectDirectory);
   console.log(moduleGraph);
-  console.log();
-  console.log(directoryGraph);
-  console.log();
 }
 
 main();

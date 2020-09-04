@@ -1,21 +1,4 @@
-import { dirname } from 'path';
 import { Graph } from './types';
-
-export const buildDirectoryDependencyGraph = (graph: Graph): Graph => {
-  const directoryDependencyMap = new Map<string, Set<string>>();
-  Object.entries(graph).forEach(([key, imports]) => {
-    const newKey = dirname(key);
-    const directoryImports = imports.map(dirname);
-    const dependencies = directoryDependencyMap.get(newKey) ?? new Set();
-    directoryImports.forEach((oneImport) => dependencies.add(oneImport));
-    directoryDependencyMap.set(newKey, dependencies);
-  });
-  const newGraph: Graph = {};
-  directoryDependencyMap.forEach((dependencies, key) => {
-    newGraph[key] = Array.from(dependencies.values()).filter((dependency) => dependency !== key);
-  });
-  return newGraph;
-};
 
 const constructDependencyChain = (
   graph: Graph,
@@ -59,7 +42,7 @@ const constructDependencyChain = (
   dependencyChain.push(node);
 };
 
-export const dependencyChainBuilder = (graph: Graph): readonly string[] => {
+const dependencyChainBuilder = (graph: Graph): readonly string[] => {
   const importedCounter = new Map<string, number>();
   Object.entries(graph).forEach(([key, imports]) => {
     importedCounter.set(key, importedCounter.get(key) ?? 0);
@@ -101,3 +84,5 @@ export const dependencyChainBuilder = (graph: Graph): readonly string[] => {
   }
   return dependencyChain;
 };
+
+export default dependencyChainBuilder;
