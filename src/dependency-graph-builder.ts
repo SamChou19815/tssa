@@ -30,7 +30,7 @@ const getImports = (projectDirectory: string, sourceFile: SourceFile): readonly 
   return imports;
 };
 
-const buildDependencyGraph = (projectDirectory: string): Graph => {
+export const buildDependencyGraph = (projectDirectory: string): Graph => {
   const project = new Project({
     tsConfigFilePath: `${projectDirectory}/tsconfig.json`,
   });
@@ -43,4 +43,17 @@ const buildDependencyGraph = (projectDirectory: string): Graph => {
   return graph;
 };
 
-export default buildDependencyGraph;
+export const buildReverseDependencyGraphFromDependencyGraph = (graph: Graph): Graph => {
+  const reverseDependependencyGraph: Graph = {};
+
+  Object.entries(graph).forEach(([tsModule, importedTSModules]) =>
+    importedTSModules.forEach((importedTSModule) => {
+      reverseDependependencyGraph[importedTSModule] = [
+        ...(reverseDependependencyGraph[importedTSModule] ?? []),
+        tsModule,
+      ];
+    })
+  );
+
+  return reverseDependependencyGraph;
+};
