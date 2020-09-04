@@ -1,11 +1,8 @@
 /* eslint-disable no-console */
-import * as yargs from 'yargs';
 import dependencyAnalysis from './dependency-analysis';
 
 function main(): void {
-  const { project: projectDirectory } = yargs
-    .option('project', { demandOption: true, description: 'Path of TS project to analyze' })
-    .help().argv;
+  const projectDirectory = process.argv[2];
 
   if (typeof projectDirectory !== 'string') {
     console.error('project must be a string!');
