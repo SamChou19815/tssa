@@ -9,8 +9,9 @@ function main(): void {
     return;
   }
 
-  const moduleGraph = performDependencyAnalysisForProject(projectDirectory);
-  console.log(moduleGraph);
+  const { graph, dependencyChain } = performDependencyAnalysisForProject(projectDirectory);
+  console.log(graph);
+  console.log(dependencyChain);
 }
 
 main();
