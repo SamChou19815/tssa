@@ -21,9 +21,7 @@ const getDependencyChainForTSModule = (graph: Graph, tsModule: string): readonly
 
     // Check dependencies.
     const moduleDependencies = graph[node];
-    if (moduleDependencies == null) {
-      throw new Error(`Module ${node} is not found!`);
-    }
+    if (moduleDependencies == null) return;
 
     // Visit dependencies
     allVisited.add(node);
