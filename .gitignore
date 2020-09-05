@@ -16,3 +16,4 @@
 # Build
 node_modules/
 dist/
+bin/
