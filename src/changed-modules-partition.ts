@@ -12,8 +12,8 @@ const partitionProjectChangedModulePaths = (
 ): readonly ProjectAndChangedPaths[] => {
   const map = new Map<string, string[]>();
   allChangedModulePaths.forEach((changedModulePath) => {
-    const projectRootPath = projectPathsRelativeToRepositoryRoot.find((projectPath) =>
-      changedModulePath.startsWith(projectPath)
+    const projectRootPath = projectPathsRelativeToRepositoryRoot.find(
+      (projectPath) => changedModulePath.startsWith(projectPath) || projectPath === '.'
     );
     if (projectRootPath != null) {
       const paths = map.get(projectRootPath) ?? [];

@@ -1,5 +1,7 @@
 /* eslint-disable no-console */
 
+import { normalize } from 'path';
+
 import partitionProjectChangedModulePaths from './changed-modules-partition';
 import { getTopologicallyOrderedTransitiveDependencyChainFromTSModules } from './dependency-graph-analyzer';
 import {
@@ -8,7 +10,7 @@ import {
 } from './dependency-graph-builder';
 
 const analyzeForProject = (projectDirectory: string, changedPaths: readonly string[]): void => {
-  console.log(`-- Analyzing ${projectDirectory} --`);
+  console.log(`[tssa] Analyzing ${projectDirectory}...`);
 
   const forwardDependencyGraph = buildDependencyGraph(projectDirectory);
   const reverseDependencyGraph = buildReverseDependencyGraphFromDependencyGraph(
@@ -16,7 +18,7 @@ const analyzeForProject = (projectDirectory: string, changedPaths: readonly stri
   );
 
   if (changedPaths.length === 0) {
-    console.log(`Nothing is changed for ${projectDirectory}.`);
+    console.log(`[OK] Nothing is changed for ${projectDirectory}.`);
     return;
   }
   const forwardDependencyChain = getTopologicallyOrderedTransitiveDependencyChainFromTSModules(
@@ -30,7 +32,7 @@ const analyzeForProject = (projectDirectory: string, changedPaths: readonly stri
 
   console.log(forwardDependencyChain);
   console.log(reverseDependencyChain);
-  console.log(`-- Finished analysis on ${projectDirectory} --`);
+  console.log(`[tssa] Finished analysis on ${projectDirectory}.`);
   console.log();
 };
 
@@ -41,11 +43,11 @@ const main = (): void => {
   let processedAllProjectsPath = false;
   process.argv.slice(2).forEach((processArgument) => {
     if (processedAllProjectsPath) {
-      changedPaths.push(processArgument);
+      changedPaths.push(normalize(processArgument));
     } else if (processArgument === '--') {
       processedAllProjectsPath = true;
     } else {
-      projects.push(processArgument);
+      projects.push(normalize(processArgument));
     }
   });
 
@@ -53,6 +55,8 @@ const main = (): void => {
   projectAndChangedPaths.forEach(({ projectPath, changedModulePaths }) =>
     analyzeForProject(projectPath, changedModulePaths)
   );
+
+  console.log('[tssa] Finished running analysis on all projects.');
 };
 
 main();

@@ -7,7 +7,8 @@
     "format": "prettier --write '**/*.ts'",
     "format:check": "prettier --check '**/*.ts'",
     "lint": "eslint . --ext .ts",
-    "build": "tsc --incremental"
+    "bundle": "ncc build src/index.ts -o bin -m -e typescript --no-source-map-register --transpile-only",
+    "build": "tsc --noEmit"
   },
   "main": "dist/index.js",
   "dependencies": {
@@ -19,6 +20,7 @@
     "@types/node": "^14.6.4",
     "@typescript-eslint/eslint-plugin": "^4.0.1",
     "@typescript-eslint/parser": "^4.0.1",
+    "@vercel/ncc": "^0.24.0",
     "eslint": "^7.8.1",
     "eslint-import-resolver-node": "^0.3.3",
     "eslint-plugin-import": "^2.20.0",
