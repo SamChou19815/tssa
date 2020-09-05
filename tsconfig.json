@@ -1,9 +1,11 @@
 {
   "compilerOptions": {
+    "importsNotUsedAsValues": "error",
+    "lib": ["dom", "esnext"],
+    "moduleResolution": "node",
     "outDir": "dist",
     "strict": true,
-    "importsNotUsedAsValues": "error",
-    "lib": ["dom", "esnext"]
+    "target": "es2017"
   },
   "include": ["src"]
 }

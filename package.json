@@ -7,7 +7,7 @@
     "format": "prettier --write '**/*.ts'",
     "format:check": "prettier --check '**/*.ts'",
     "lint": "eslint . --ext .ts",
-    "build": "tsc"
+    "build": "tsc --incremental"
   },
   "main": "dist/index.js",
   "dependencies": {
