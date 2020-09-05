@@ -1,49 +1,58 @@
 /* eslint-disable no-console */
-import {
-  getTopologicallyOrderedTransitiveDependencyChainFromTSModules,
-  getGlobalTopologicallyOrderedTransitiveDependencyChain,
-} from './dependency-graph-analyzer';
+
+import partitionProjectChangedModulePaths from './changed-modules-partition';
+import { getTopologicallyOrderedTransitiveDependencyChainFromTSModules } from './dependency-graph-analyzer';
 import {
   buildDependencyGraph,
   buildReverseDependencyGraphFromDependencyGraph,
 } from './dependency-graph-builder';
 
-function main(): void {
-  const projectDirectory = process.argv[2];
-  const queryPaths = process.argv.slice(3);
-
-  if (typeof projectDirectory !== 'string') {
-    console.error('project must be a string!');
-    return;
-  }
+const analyzeForProject = (projectDirectory: string, changedPaths: readonly string[]): void => {
+  console.log(`-- Analyzing ${projectDirectory} --`);
 
   const forwardDependencyGraph = buildDependencyGraph(projectDirectory);
   const reverseDependencyGraph = buildReverseDependencyGraphFromDependencyGraph(
     forwardDependencyGraph
   );
 
-  let forwardDependencyChain: readonly string[];
-  let reverseDependencyChain: readonly string[];
-  if (queryPaths.length > 0) {
-    forwardDependencyChain = getTopologicallyOrderedTransitiveDependencyChainFromTSModules(
-      forwardDependencyGraph,
-      queryPaths
-    );
-    reverseDependencyChain = getTopologicallyOrderedTransitiveDependencyChainFromTSModules(
-      reverseDependencyGraph,
-      queryPaths
-    );
-  } else {
-    forwardDependencyChain = getGlobalTopologicallyOrderedTransitiveDependencyChain(
-      forwardDependencyGraph
-    );
-    reverseDependencyChain = getGlobalTopologicallyOrderedTransitiveDependencyChain(
-      reverseDependencyGraph
-    );
+  if (changedPaths.length === 0) {
+    console.log(`Nothing is changed for ${projectDirectory}.`);
+    return;
   }
+  const forwardDependencyChain = getTopologicallyOrderedTransitiveDependencyChainFromTSModules(
+    forwardDependencyGraph,
+    changedPaths
+  );
+  const reverseDependencyChain = getTopologicallyOrderedTransitiveDependencyChainFromTSModules(
+    reverseDependencyGraph,
+    changedPaths
+  );
 
   console.log(forwardDependencyChain);
   console.log(reverseDependencyChain);
-}
+  console.log(`-- Finished analysis on ${projectDirectory} --`);
+  console.log();
+};
+
+const main = (): void => {
+  const projects: string[] = [];
+  const changedPaths: string[] = [];
+
+  let processedAllProjectsPath = false;
+  process.argv.slice(2).forEach((processArgument) => {
+    if (processedAllProjectsPath) {
+      changedPaths.push(processArgument);
+    } else if (processArgument === '--') {
+      processedAllProjectsPath = true;
+    } else {
+      projects.push(processArgument);
+    }
+  });
+
+  const projectAndChangedPaths = partitionProjectChangedModulePaths(projects, changedPaths);
+  projectAndChangedPaths.forEach(({ projectPath, changedModulePaths }) =>
+    analyzeForProject(projectPath, changedModulePaths)
+  );
+};
 
 main();
