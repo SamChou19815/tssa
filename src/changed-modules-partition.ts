@@ -16,7 +16,7 @@ const partitionProjectChangedModulePaths = (
       changedModulePath.startsWith(projectPath)
     );
     if (projectRootPath != null) {
-      const paths = map.get(projectRootPath) || [];
+      const paths = map.get(projectRootPath) ?? [];
       paths.push(relative(projectRootPath, changedModulePath));
       map.set(projectRootPath, paths);
     }
