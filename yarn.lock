@@ -1081,15 +1081,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphviz@npm:^0.0.9":
-  version: 0.0.9
-  resolution: "graphviz@npm:0.0.9"
-  dependencies:
-    temp: ~0.4.0
-  checksum: 83d3cfb541d93027319a139526b084250ca0322a16450908615038d3fa45170fecfa812fe2bac6ce42a64c27b72841761d6414685d09e7dd7534da2547cfdb5f
-  languageName: node
-  linkType: hard
-
 "has-flag@npm:^3.0.0":
   version: 3.0.0
   resolution: "has-flag@npm:3.0.0"
@@ -2026,13 +2017,6 @@ resolve@^1.13.1:
   languageName: node
   linkType: hard
 
-"temp@npm:~0.4.0":
-  version: 0.4.0
-  resolution: "temp@npm:0.4.0"
-  checksum: f0322323703d5504f6ce70ca5a6a98655d997361981ac4c340da19d9de90b43ac7a5a9827486e24bb9c41ad71a5c2db7b51b0ed975ba4248b0a1fe17b391c51e
-  languageName: node
-  linkType: hard
-
 "text-table@npm:^0.2.0":
   version: 0.2.0
   resolution: "text-table@npm:0.2.0"
@@ -2080,10 +2064,11 @@ resolve@^1.13.1:
     eslint-config-prettier: ^6.11.0
     eslint-import-resolver-node: ^0.3.3
     eslint-plugin-import: ^2.20.0
-    graphviz: ^0.0.9
     prettier: 2.1.1
     ts-morph: ^8.1.0
     typescript: ^4.0.2
+  peerDependencies:
+    typescript: "*"
   languageName: unknown
   linkType: soft
 
