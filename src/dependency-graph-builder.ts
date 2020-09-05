@@ -1,5 +1,7 @@
 import * as path from 'path';
+
 import { Project, SourceFile } from 'ts-morph';
+
 import type { Graph } from './dependency-graph-types';
 
 const getImports = (projectDirectory: string, sourceFile: SourceFile): readonly string[] => {
