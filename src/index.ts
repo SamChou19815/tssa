@@ -105,7 +105,7 @@ Transitive Reverse Dependencies:
 ${dependencyListToString(allReverseDependencyChain)}`;
 
   if (process.env.CI && process.env.GITHUB_TOKEN && process.env.USER_LOGIN) {
-    commentOnPullRequest('[tssa]\n', analysisResultString);
+    commentOnPullRequest('[tssa]\n\n', analysisResultString);
   }
 
   console.log(analysisResultString);
