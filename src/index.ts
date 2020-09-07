@@ -89,16 +89,23 @@ const main = (): void => {
   });
 
   const analysisResultString = `Forward Dependencies:
+
 ${dependencyListToString(allForwardDependencies)}
+
 Reverse Dependencies:
+
 ${dependencyListToString(allReverseDependencies)}
+
 Transitive Forward Dependencies:
+
 ${dependencyListToString(allForwardDependencyChain)}
+
 Transitive Reverse Dependencies:
+
 ${dependencyListToString(allReverseDependencyChain)}`;
 
   if (process.env.CI && process.env.GITHUB_TOKEN && process.env.USER_LOGIN) {
-    commentOnPullRequest('[tssa]', analysisResultString);
+    commentOnPullRequest('[tssa]\n', analysisResultString);
   }
 
   console.log(analysisResultString);
