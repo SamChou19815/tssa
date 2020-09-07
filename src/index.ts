@@ -65,6 +65,8 @@ const main = (): void => {
     }
   });
 
+  console.log('changed files', changedPaths);
+
   console.log('[tssa] TypeScript Static Analyzer');
   console.log();
   const projectAndChangedPaths = partitionProjectChangedModulePaths(projects, changedPaths);
