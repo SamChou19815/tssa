@@ -3,24 +3,36 @@
 import { normalize } from 'path';
 
 import partitionProjectChangedModulePaths from './changed-modules-partition';
-import { getTopologicallyOrderedTransitiveDependencyChainFromTSModules } from './dependency-graph-analyzer';
+import {
+  getDependenciesFromTSModules,
+  getTopologicallyOrderedTransitiveDependencyChainFromTSModules,
+} from './dependency-graph-analyzer';
 import {
   buildDependencyGraph,
   buildReverseDependencyGraphFromDependencyGraph,
 } from './dependency-graph-builder';
 
-const analyzeForProject = (projectDirectory: string, changedPaths: readonly string[]): void => {
-  console.log(`[tssa] Analyzing ${projectDirectory}...`);
+const printDependencyList = (list: readonly string[]): void =>
+  console.log(list.map((it) => `> ${it}`).join('\n'));
 
+type ProjectAnalysisResult = {
+  forwardDependencies: readonly string[];
+  reverseDependencies: readonly string[];
+  forwardDependencyChain: readonly string[];
+  reverseDependencyChain: readonly string[];
+};
+
+const analyzeForProject = (
+  projectDirectory: string,
+  changedPaths: readonly string[]
+): ProjectAnalysisResult => {
   const forwardDependencyGraph = buildDependencyGraph(projectDirectory);
   const reverseDependencyGraph = buildReverseDependencyGraphFromDependencyGraph(
     forwardDependencyGraph
   );
 
-  if (changedPaths.length === 0) {
-    console.log(`[OK] Nothing is changed for ${projectDirectory}.`);
-    return;
-  }
+  const forwardDependencies = getDependenciesFromTSModules(forwardDependencyGraph, changedPaths);
+  const reverseDependencies = getDependenciesFromTSModules(forwardDependencyGraph, changedPaths);
   const forwardDependencyChain = getTopologicallyOrderedTransitiveDependencyChainFromTSModules(
     forwardDependencyGraph,
     changedPaths
@@ -30,10 +42,12 @@ const analyzeForProject = (projectDirectory: string, changedPaths: readonly stri
     changedPaths
   );
 
-  console.log(forwardDependencyChain);
-  console.log(reverseDependencyChain);
-  console.log(`[tssa] Finished analysis on ${projectDirectory}.`);
-  console.log();
+  return {
+    forwardDependencies,
+    reverseDependencies,
+    forwardDependencyChain,
+    reverseDependencyChain,
+  };
 };
 
 const main = (): void => {
@@ -51,10 +65,33 @@ const main = (): void => {
     }
   });
 
+  console.log('[tssa] TypeScript Static Analyzer');
+  console.log();
   const projectAndChangedPaths = partitionProjectChangedModulePaths(projects, changedPaths);
-  projectAndChangedPaths.forEach(({ projectPath, changedModulePaths }) =>
-    analyzeForProject(projectPath, changedModulePaths)
-  );
+  projectAndChangedPaths.forEach(({ projectPath, changedModulePaths }) => {
+    console.log(`[tssa] Analyzing \`${projectPath}\`...`);
+    if (changedPaths.length === 0) {
+      console.log(`[OK] Nothing is changed for \`${projectPath}\`.`);
+      return;
+    }
+    const {
+      forwardDependencies,
+      reverseDependencies,
+      forwardDependencyChain,
+      reverseDependencyChain,
+    } = analyzeForProject(projectPath, changedModulePaths);
+
+    console.log('Forward Dependencies:');
+    printDependencyList(forwardDependencies);
+    console.log('Reverse Dependencies:');
+    printDependencyList(reverseDependencies);
+    console.log('Transitive Forward Dependencies:');
+    printDependencyList(forwardDependencyChain);
+    console.log('Transitive Reverse Dependencies:');
+    printDependencyList(reverseDependencyChain);
+    console.log(`[tssa] Finished analysis on \`${projectPath}\`.`);
+    console.log();
+  });
 
   console.log('[tssa] Finished running analysis on all projects.');
 };

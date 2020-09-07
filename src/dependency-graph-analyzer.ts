@@ -1,5 +1,14 @@
 import type { Graph } from './dependency-graph-types';
 
+export const getDependenciesFromTSModules = (
+  graph: Graph,
+  tsModules: readonly string[]
+): readonly string[] => {
+  const set = new Set<string>();
+  tsModules.forEach((tsModule) => graph[tsModule]?.forEach((dependency) => set.add(dependency)));
+  return Array.from(set);
+};
+
 const getDependencyChainForTSModule = (graph: Graph, tsModule: string): readonly string[] => {
   const dependencyChain: string[] = [];
   const parentChain: string[] = [];
