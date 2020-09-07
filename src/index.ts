@@ -11,9 +11,10 @@ import {
   buildDependencyGraph,
   buildReverseDependencyGraphFromDependencyGraph,
 } from './dependency-graph-builder';
+import commentOnPullRequest from './github-pull-request-comment';
 
-const printDependencyList = (list: readonly string[]): void =>
-  console.log(list.map((it) => `> ${it}`).join('\n'));
+const dependencyListToString = (list: readonly string[]): string =>
+  list.map((it) => `> ${it}`).join('\n');
 
 type ProjectAnalysisResult = {
   forwardDependencies: readonly string[];
@@ -65,15 +66,13 @@ const main = (): void => {
     }
   });
 
-  console.log('changed files', changedPaths);
-
-  console.log('[tssa] TypeScript Static Analyzer');
-  console.log();
   const projectAndChangedPaths = partitionProjectChangedModulePaths(projects, changedPaths);
+  const allForwardDependencies: string[] = [];
+  const allReverseDependencies: string[] = [];
+  const allForwardDependencyChain: string[] = [];
+  const allReverseDependencyChain: string[] = [];
   projectAndChangedPaths.forEach(({ projectPath, changedModulePaths }) => {
-    console.log(`[tssa] Analyzing \`${projectPath}\`...`);
     if (changedPaths.length === 0) {
-      console.log(`[OK] Nothing is changed for \`${projectPath}\`.`);
       return;
     }
     const {
@@ -83,19 +82,26 @@ const main = (): void => {
       reverseDependencyChain,
     } = analyzeForProject(projectPath, changedModulePaths);
 
-    console.log('Forward Dependencies:');
-    printDependencyList(forwardDependencies);
-    console.log('Reverse Dependencies:');
-    printDependencyList(reverseDependencies);
-    console.log('Transitive Forward Dependencies:');
-    printDependencyList(forwardDependencyChain);
-    console.log('Transitive Reverse Dependencies:');
-    printDependencyList(reverseDependencyChain);
-    console.log(`[tssa] Finished analysis on \`${projectPath}\`.`);
-    console.log();
+    allForwardDependencies.push(...forwardDependencies);
+    allReverseDependencies.push(...reverseDependencies);
+    allForwardDependencyChain.push(...forwardDependencyChain);
+    allReverseDependencyChain.push(...reverseDependencyChain);
   });
 
-  console.log('[tssa] Finished running analysis on all projects.');
+  const analysisResultString = `Forward Dependencies:
+${dependencyListToString(allForwardDependencies)}
+Reverse Dependencies:
+${dependencyListToString(allReverseDependencies)}
+Transitive Forward Dependencies:
+${dependencyListToString(allForwardDependencyChain)}
+Transitive Reverse Dependencies:
+${dependencyListToString(allReverseDependencyChain)}`;
+
+  if (process.env.CI) {
+    commentOnPullRequest('[tssa]', analysisResultString);
+  }
+
+  console.log(analysisResultString);
 };
 
 main();
