@@ -2,9 +2,11 @@
   "compilerOptions": {
     "importsNotUsedAsValues": "error",
     "lib": ["dom", "esnext"],
+    "module": "CommonJS",
     "moduleResolution": "node",
     "outDir": "dist",
     "strict": true,
+    "skipLibCheck": true,
     "target": "es2017"
   },
   "include": ["src"]
