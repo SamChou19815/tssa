@@ -12,6 +12,7 @@
   },
   "main": "dist/index.js",
   "dependencies": {
+    "@octokit/rest": "^18.0.5",
     "ts-morph": "^8.1.0"
   },
   "devDependencies": {
