@@ -13,7 +13,7 @@ const getImports = (projectDirectory: string, sourceFile: SourceFile): readonly 
       // Not useless, might be css module!
       let rawImportedModuleText = oneImport.getModuleSpecifier().getText(false);
       rawImportedModuleText = rawImportedModuleText.slice(1, rawImportedModuleText.length - 1);
-      if (!rawImportedModuleText.endsWith('.css')) {
+      if (!rawImportedModuleText.endsWith('.css') && !rawImportedModuleText.endsWith('.scss')) {
         return;
       }
       const resolvedCssSourceFilePath = path.resolve(
