@@ -34,7 +34,7 @@ const getImports = (projectDirectory: string, sourceFile: SourceFile): readonly 
 
 export const buildDependencyGraph = (projectDirectory: string): Graph => {
   const project = new Project({
-    tsConfigFilePath: `${projectDirectory}/tsconfig.json`,
+    tsConfigFilePath: path.join(projectDirectory, 'tsconfig.json'),
   });
   const graph: Graph = {};
   project.getSourceFiles().forEach((sourceFile) => {
