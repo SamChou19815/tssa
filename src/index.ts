@@ -11,45 +11,11 @@ import {
   buildDependencyGraph,
   buildReverseDependencyGraphFromDependencyGraph,
 } from './dependency-graph-builder';
+import type { Graph } from './dependency-graph-types';
 import commentOnPullRequest from './github-pull-request-comment';
 
 const dependencyListToString = (list: readonly string[]): string =>
   list.map((it) => `> ${it}`).join('\n');
-
-type ProjectAnalysisResult = {
-  forwardDependencies: readonly string[];
-  reverseDependencies: readonly string[];
-  forwardDependencyChain: readonly string[];
-  reverseDependencyChain: readonly string[];
-};
-
-const analyzeForProject = (
-  projectDirectory: string,
-  changedPaths: readonly string[]
-): ProjectAnalysisResult => {
-  const forwardDependencyGraph = buildDependencyGraph(projectDirectory);
-  const reverseDependencyGraph = buildReverseDependencyGraphFromDependencyGraph(
-    forwardDependencyGraph
-  );
-
-  const forwardDependencies = getDependenciesFromTSModules(forwardDependencyGraph, changedPaths);
-  const reverseDependencies = getDependenciesFromTSModules(forwardDependencyGraph, changedPaths);
-  const forwardDependencyChain = getTopologicallyOrderedTransitiveDependencyChainFromTSModules(
-    forwardDependencyGraph,
-    changedPaths
-  );
-  const reverseDependencyChain = getTopologicallyOrderedTransitiveDependencyChainFromTSModules(
-    reverseDependencyGraph,
-    changedPaths
-  );
-
-  return {
-    forwardDependencies,
-    reverseDependencies,
-    forwardDependencyChain,
-    reverseDependencyChain,
-  };
-};
 
 const main = (): void => {
   const projects: string[] = [];
@@ -78,17 +44,45 @@ const main = (): void => {
   const allReverseDependencies: string[] = [];
   const allForwardDependencyChain: string[] = [];
   const allReverseDependencyChain: string[] = [];
+  const graphs: Record<string, readonly [Graph, Graph]> = {};
   [...projectAndChangedTSPaths, ...projectAndChangedCssPaths].forEach(
     ({ projectPath, changedModulePaths }) => {
       if (changedModulePaths.length === 0) {
         return;
       }
-      const {
-        forwardDependencies,
-        reverseDependencies,
-        forwardDependencyChain,
-        reverseDependencyChain,
-      } = analyzeForProject(projectPath, changedModulePaths);
+      if (graphs[projectPath] == null) {
+        const forwardDependencyGraph = buildDependencyGraph(projectPath);
+        const reverseDependencyGraph = buildReverseDependencyGraphFromDependencyGraph(
+          forwardDependencyGraph
+        );
+        graphs[projectPath] = [forwardDependencyGraph, reverseDependencyGraph];
+      }
+    }
+  );
+
+  [...projectAndChangedTSPaths, ...projectAndChangedCssPaths].forEach(
+    ({ projectPath: projectDirectory, changedModulePaths }) => {
+      if (changedModulePaths.length === 0) {
+        return;
+      }
+      const [forwardDependencyGraph, reverseDependencyGraph] = graphs[projectDirectory];
+
+      const forwardDependencies = getDependenciesFromTSModules(
+        forwardDependencyGraph,
+        changedModulePaths
+      );
+      const reverseDependencies = getDependenciesFromTSModules(
+        forwardDependencyGraph,
+        changedModulePaths
+      );
+      const forwardDependencyChain = getTopologicallyOrderedTransitiveDependencyChainFromTSModules(
+        forwardDependencyGraph,
+        changedModulePaths
+      );
+      const reverseDependencyChain = getTopologicallyOrderedTransitiveDependencyChainFromTSModules(
+        reverseDependencyGraph,
+        changedModulePaths
+      );
 
       allForwardDependencies.push(...forwardDependencies);
       allReverseDependencies.push(...reverseDependencies);
