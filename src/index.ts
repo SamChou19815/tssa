@@ -47,9 +47,9 @@ const main = (): void => {
   const projectAndChangedTSPaths = partitionProjectChangedModulePaths(projects, changedTSPaths);
   const projectAndChangedCssPaths = partitionProjectChangedModulePaths(projects, changedCssPaths);
 
-  const allTSReverseDependencies: string[] = [];
-  const allTSReverseDependencyChain: string[] = [];
-  const allCssDependencyChain: string[] = [];
+  let allTSReverseDependencies: string[] = [];
+  let allTSReverseDependencyChain: string[] = [];
+  let allCssDependencyChain: string[] = [];
   const graphs: Record<string, readonly [Graph, Graph]> = {};
 
   [...projectAndChangedTSPaths, ...projectAndChangedCssPaths].forEach(
@@ -82,7 +82,7 @@ const main = (): void => {
       changedModulePaths
     );
 
-    allTSReverseDependencies.push(...reverseDependencies);
+    allTSReverseDependencies.push(...reverseDependencies, ...changedModulePaths);
     allTSReverseDependencyChain.push(...reverseDependencyChain);
   });
 
@@ -103,25 +103,42 @@ const main = (): void => {
 
     allCssDependencyChain.push(...forwardDependencyChain, ...reverseDependencyChain);
   });
+  allTSReverseDependencies = Array.from(new Set(allTSReverseDependencies));
+  allTSReverseDependencyChain = Array.from(new Set(allTSReverseDependencyChain));
+  allCssDependencyChain = Array.from(new Set(allCssDependencyChain));
 
-  const analysisResultString = `Modules that your changes in TS code will directly affect:
+  const tsDirectReverseDependencyAnalysisResultString =
+    allTSReverseDependencies.length === 0
+      ? null
+      : `Modules that your changes in TS code will directly affect:
 
-${dependencyListToString(allTSReverseDependencies)}
-
-<details>
+${dependencyListToString(allTSReverseDependencies)}`;
+  const tsTransitiveReverseDependencyAnalysisResultString =
+    allTSReverseDependencyChain.length === 0
+      ? null
+      : `<details>
   <summary>Modules that your changes in TS code may indirectly affect:</summary>
 
 ${dependencyListToString(allTSReverseDependencyChain)}
 
-</details>
-
-
-<details>
+</details>`;
+  const cssAnalysisResultString =
+    allCssDependencyChain.length === 0
+      ? null
+      : `<details>
   <summary>Modules that your changes in css code may affect:</summary>
 
-${dependencyListToString(Array.from(new Set(allCssDependencyChain)))}
+${dependencyListToString(allCssDependencyChain)}
 
 </details>`;
+
+  const analysisResultString = [
+    tsDirectReverseDependencyAnalysisResultString,
+    tsTransitiveReverseDependencyAnalysisResultString,
+    cssAnalysisResultString,
+  ]
+    .filter((it) => it != null)
+    .join('\n\n');
 
   if (process.env.CI && process.env.GITHUB_TOKEN && process.env.USER_LOGIN) {
     commentOnPullRequest('[tssa]\n\n', analysisResultString);
