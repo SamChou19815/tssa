@@ -28,7 +28,13 @@ const main = (): void => {
       const normalizedPath = normalize(processArgument);
       if (normalizedPath.endsWith('.css') || normalizedPath.endsWith('.scss')) {
         changedCssPaths.push(normalizedPath);
-      } else {
+      } else if (
+        normalizedPath.endsWith('.ts') ||
+        normalizedPath.endsWith('.tsx') ||
+        normalizedPath.endsWith('.js') ||
+        normalizedPath.endsWith('.cjs') ||
+        normalizedPath.endsWith('.jsx')
+      ) {
         changedTSPaths.push(normalizedPath);
       }
     } else if (processArgument === '--') {
