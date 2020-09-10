@@ -40,11 +40,12 @@ const main = (): void => {
 
   const projectAndChangedTSPaths = partitionProjectChangedModulePaths(projects, changedTSPaths);
   const projectAndChangedCssPaths = partitionProjectChangedModulePaths(projects, changedCssPaths);
-  const allForwardDependencies: string[] = [];
-  const allReverseDependencies: string[] = [];
-  const allForwardDependencyChain: string[] = [];
-  const allReverseDependencyChain: string[] = [];
+
+  const allTSReverseDependencies: string[] = [];
+  const allTSReverseDependencyChain: string[] = [];
+  const allCssDependencyChain: string[] = [];
   const graphs: Record<string, readonly [Graph, Graph]> = {};
+
   [...projectAndChangedTSPaths, ...projectAndChangedCssPaths].forEach(
     ({ projectPath, changedModulePaths }) => {
       if (changedModulePaths.length === 0) {
@@ -60,52 +61,61 @@ const main = (): void => {
     }
   );
 
-  [...projectAndChangedTSPaths, ...projectAndChangedCssPaths].forEach(
-    ({ projectPath: projectDirectory, changedModulePaths }) => {
-      if (changedModulePaths.length === 0) {
-        return;
-      }
-      const [forwardDependencyGraph, reverseDependencyGraph] = graphs[projectDirectory];
-
-      const forwardDependencies = getDependenciesFromTSModules(
-        forwardDependencyGraph,
-        changedModulePaths
-      );
-      const reverseDependencies = getDependenciesFromTSModules(
-        forwardDependencyGraph,
-        changedModulePaths
-      );
-      const forwardDependencyChain = getTopologicallyOrderedTransitiveDependencyChainFromTSModules(
-        forwardDependencyGraph,
-        changedModulePaths
-      );
-      const reverseDependencyChain = getTopologicallyOrderedTransitiveDependencyChainFromTSModules(
-        reverseDependencyGraph,
-        changedModulePaths
-      );
-
-      allForwardDependencies.push(...forwardDependencies);
-      allReverseDependencies.push(...reverseDependencies);
-      allForwardDependencyChain.push(...forwardDependencyChain);
-      allReverseDependencyChain.push(...reverseDependencyChain);
+  projectAndChangedTSPaths.forEach(({ projectPath: projectDirectory, changedModulePaths }) => {
+    if (changedModulePaths.length === 0) {
+      return;
     }
-  );
+    const [, reverseDependencyGraph] = graphs[projectDirectory];
 
-  const analysisResultString = `Forward Dependencies:
+    const reverseDependencies = getDependenciesFromTSModules(
+      reverseDependencyGraph,
+      changedModulePaths
+    );
+    const reverseDependencyChain = getTopologicallyOrderedTransitiveDependencyChainFromTSModules(
+      reverseDependencyGraph,
+      changedModulePaths
+    );
 
-${dependencyListToString(allForwardDependencies)}
+    allTSReverseDependencies.push(...reverseDependencies);
+    allTSReverseDependencyChain.push(...reverseDependencyChain);
+  });
 
-Reverse Dependencies:
+  projectAndChangedCssPaths.forEach(({ projectPath: projectDirectory, changedModulePaths }) => {
+    if (changedModulePaths.length === 0) {
+      return;
+    }
+    const [forwardDependencyGraph, reverseDependencyGraph] = graphs[projectDirectory];
 
-${dependencyListToString(allReverseDependencies)}
+    const forwardDependencyChain = getTopologicallyOrderedTransitiveDependencyChainFromTSModules(
+      forwardDependencyGraph,
+      changedModulePaths
+    );
+    const reverseDependencyChain = getTopologicallyOrderedTransitiveDependencyChainFromTSModules(
+      reverseDependencyGraph,
+      changedModulePaths
+    );
 
-Transitive Forward Dependencies:
+    allCssDependencyChain.push(...forwardDependencyChain, ...reverseDependencyChain);
+  });
 
-${dependencyListToString(allForwardDependencyChain)}
+  const analysisResultString = `Modules that your changes in TS code will directly affect:
 
-Transitive Reverse Dependencies:
+${dependencyListToString(allTSReverseDependencies)}
 
-${dependencyListToString(allReverseDependencyChain)}`;
+<details>
+  <summary>Modules that your changes in TS code may indirectly affect:</summary>
+
+${dependencyListToString(allTSReverseDependencyChain)}
+
+</details>
+
+
+<details>
+  <summary>Modules that your changes in css code may affect:</summary>
+
+${dependencyListToString(Array.from(new Set(allCssDependencyChain)))}
+
+</details>`;
 
   if (process.env.CI && process.env.GITHUB_TOKEN && process.env.USER_LOGIN) {
     commentOnPullRequest('[tssa]\n\n', analysisResultString);
