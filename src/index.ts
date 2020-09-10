@@ -53,12 +53,18 @@ const analyzeForProject = (
 
 const main = (): void => {
   const projects: string[] = [];
-  const changedPaths: string[] = [];
+  const changedTSPaths: string[] = [];
+  const changedCssPaths: string[] = [];
 
   let processedAllProjectsPath = false;
   process.argv.slice(2).forEach((processArgument) => {
     if (processedAllProjectsPath) {
-      changedPaths.push(normalize(processArgument));
+      const normalizedPath = normalize(processArgument);
+      if (normalizedPath.endsWith('.css') || normalizedPath.endsWith('.scss')) {
+        changedCssPaths.push(normalizedPath);
+      } else {
+        changedTSPaths.push(normalizedPath);
+      }
     } else if (processArgument === '--') {
       processedAllProjectsPath = true;
     } else {
@@ -66,27 +72,30 @@ const main = (): void => {
     }
   });
 
-  const projectAndChangedPaths = partitionProjectChangedModulePaths(projects, changedPaths);
+  const projectAndChangedTSPaths = partitionProjectChangedModulePaths(projects, changedTSPaths);
+  const projectAndChangedCssPaths = partitionProjectChangedModulePaths(projects, changedCssPaths);
   const allForwardDependencies: string[] = [];
   const allReverseDependencies: string[] = [];
   const allForwardDependencyChain: string[] = [];
   const allReverseDependencyChain: string[] = [];
-  projectAndChangedPaths.forEach(({ projectPath, changedModulePaths }) => {
-    if (changedPaths.length === 0) {
-      return;
-    }
-    const {
-      forwardDependencies,
-      reverseDependencies,
-      forwardDependencyChain,
-      reverseDependencyChain,
-    } = analyzeForProject(projectPath, changedModulePaths);
+  [...projectAndChangedTSPaths, ...projectAndChangedCssPaths].forEach(
+    ({ projectPath, changedModulePaths }) => {
+      if (changedModulePaths.length === 0) {
+        return;
+      }
+      const {
+        forwardDependencies,
+        reverseDependencies,
+        forwardDependencyChain,
+        reverseDependencyChain,
+      } = analyzeForProject(projectPath, changedModulePaths);
 
-    allForwardDependencies.push(...forwardDependencies);
-    allReverseDependencies.push(...reverseDependencies);
-    allForwardDependencyChain.push(...forwardDependencyChain);
-    allReverseDependencyChain.push(...reverseDependencyChain);
-  });
+      allForwardDependencies.push(...forwardDependencies);
+      allReverseDependencies.push(...reverseDependencies);
+      allForwardDependencyChain.push(...forwardDependencyChain);
+      allReverseDependencyChain.push(...reverseDependencyChain);
+    }
+  );
 
   const analysisResultString = `Forward Dependencies:
 
