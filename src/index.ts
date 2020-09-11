@@ -125,12 +125,9 @@ ${dependencyListToString(allTSReverseDependencyChain)}
   const cssAnalysisResultString =
     allCssDependencyChain.length === 0
       ? null
-      : `<details>
-  <summary>Modules that your changes in css code may affect:</summary>
+      : `Modules that your changes in css code may affect:
 
-${dependencyListToString(allCssDependencyChain)}
-
-</details>`;
+${dependencyListToString(allCssDependencyChain)}`;
 
   const analysisResultString = [
     tsDirectReverseDependencyAnalysisResultString,
