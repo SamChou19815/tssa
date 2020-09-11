@@ -137,13 +137,13 @@ ${dependencyListToString(allTSReverseDependencyChain)}
 
 ${dependencyListToString(allCssDependencyChain)}`;
 
-  const analysisResultString = [
+  const analysisResultStrings = [
     tsDirectReverseDependencyAnalysisResultString,
     tsTransitiveReverseDependencyAnalysisResultString,
     cssAnalysisResultString,
-  ]
-    .filter((it) => it != null)
-    .join('\n\n');
+  ].filter((it): it is string => it != null);
+  const analysisResultString =
+    analysisResultStrings.length === 0 ? 'No notable changes.' : analysisResultStrings.join('\n\n');
 
   if (process.env.CI && process.env.GITHUB_TOKEN && process.env.USER_LOGIN) {
     commentOnPullRequest('[tssa]\n\n', analysisResultString);
