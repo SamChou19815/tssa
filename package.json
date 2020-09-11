@@ -1,7 +1,11 @@
 {
   "name": "@dev-sam/tssa",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "AGPLv3",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SamChou19815/tssa"
+  },
   "scripts": {
     "start": "node dist/index.js",
     "format": "prettier --write '**/*.ts'",
