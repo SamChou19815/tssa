@@ -8,7 +8,9 @@
     "format:check": "prettier --check '**/*.ts'",
     "lint": "eslint . --ext .ts",
     "bundle": "ncc build src/index.ts -o bin -m -e typescript --no-source-map-register --transpile-only",
-    "build": "tsc"
+    "build": "tsc",
+    "prepack": "tsc",
+    "publish": "yarn npm publish --access public"
   },
   "main": "dist/api.js",
   "bin": "dist/index.js",
