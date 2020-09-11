@@ -47,6 +47,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@dev-sam/tssa@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@dev-sam/tssa@workspace:."
+  dependencies:
+    "@dev-sam/eslint-config-common": 0.17.0
+    "@octokit/rest": ^18.0.5
+    "@types/graphviz": ^0.0.32
+    "@types/node": ^14.6.4
+    "@typescript-eslint/eslint-plugin": ^4.0.1
+    "@typescript-eslint/parser": ^4.0.1
+    "@vercel/ncc": ^0.24.0
+    eslint: ^7.8.1
+    eslint-import-resolver-node: ^0.3.3
+    eslint-plugin-import: ^2.20.0
+    prettier: 2.1.1
+    ts-morph: ^8.1.0
+    typescript: ^4.0.2
+  peerDependencies:
+    typescript: "*"
+  bin:
+    tssa: dist/index.js
+  languageName: unknown
+  linkType: soft
+
 "@dsherret/to-absolute-glob@npm:^2.0.2":
   version: 2.0.2
   resolution: "@dsherret/to-absolute-glob@npm:2.0.2"
@@ -2792,28 +2816,6 @@ resolve@^1.13.1:
   checksum: d03db5b8d205cd908421bd16c53c7912b857e4cbe4a54ea2b5f7c7a22cd86317462ea1783b093a36d78a1611fa10baf51696a94bb5c1e13c818145b8954a02c9
   languageName: node
   linkType: hard
-
-"tssa@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "tssa@workspace:."
-  dependencies:
-    "@dev-sam/eslint-config-common": 0.17.0
-    "@octokit/rest": ^18.0.5
-    "@types/graphviz": ^0.0.32
-    "@types/node": ^14.6.4
-    "@typescript-eslint/eslint-plugin": ^4.0.1
-    "@typescript-eslint/parser": ^4.0.1
-    "@vercel/ncc": ^0.24.0
-    eslint: ^7.8.1
-    eslint-import-resolver-node: ^0.3.3
-    eslint-plugin-import: ^2.20.0
-    prettier: 2.1.1
-    ts-morph: ^8.1.0
-    typescript: ^4.0.2
-  peerDependencies:
-    typescript: "*"
-  languageName: unknown
-  linkType: soft
 
 "tsutils@npm:^3.17.1":
   version: 3.17.1
