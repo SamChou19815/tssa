@@ -1,5 +1,5 @@
 {
-  "name": "tssa",
+  "name": "@dev-sam/tssa",
   "version": "0.0.1",
   "license": "AGPLv3",
   "scripts": {
@@ -8,9 +8,13 @@
     "format:check": "prettier --check '**/*.ts'",
     "lint": "eslint . --ext .ts",
     "bundle": "ncc build src/index.ts -o bin -m -e typescript --no-source-map-register --transpile-only",
-    "build": "tsc --noEmit"
+    "build": "tsc"
   },
-  "main": "dist/index.js",
+  "main": "dist/api.js",
+  "bin": "dist/index.js",
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "@octokit/rest": "^18.0.5",
     "ts-morph": "^8.1.0"

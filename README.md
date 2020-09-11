@@ -7,10 +7,6 @@ TypeScript Static Analyzer
 ## Getting Started
 
 ```bash
-# Clone this repository
-cd tssa
-yarn
-yarn build
-# using output from git
-yarn start path/1/to/ts/project/to/analyze path/2/to/ts/project/to/analyze -- $(git diff HEAD^ HEAD --name-only)
+yarn add --dev @dev-sam/tssa
+yarn tssa path/1/to/ts/project/to/analyze path/2/to/ts/project/to/analyze -- $(git diff HEAD^ HEAD --name-only)
 ```
