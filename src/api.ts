@@ -90,7 +90,10 @@ const runTSSA = (tssaCLIArguments: readonly string[]): void => {
       changedModulePaths
     ).map((it) => join(projectDirectory, it));
 
-    allTSReverseDependencies.push(...reverseDependencies, ...changedModulePaths);
+    allTSReverseDependencies.push(
+      ...reverseDependencies,
+      ...changedModulePaths.map((it) => join(projectDirectory, it))
+    );
     allTSReverseDependencyChain.push(...reverseDependencyChain);
   });
 
