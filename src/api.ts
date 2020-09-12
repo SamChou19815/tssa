@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-import { normalize } from 'path';
+import { join, normalize } from 'path';
 
 import partitionProjectChangedModulePaths from './changed-modules-partition';
 import {
@@ -84,11 +84,11 @@ const runTSSA = (tssaCLIArguments: readonly string[]): void => {
     const reverseDependencies = getDependenciesFromTSModules(
       reverseDependencyGraph,
       changedModulePaths
-    );
+    ).map((it) => join(projectDirectory, it));
     const reverseDependencyChain = getTopologicallyOrderedTransitiveDependencyChainFromTSModules(
       reverseDependencyGraph,
       changedModulePaths
-    );
+    ).map((it) => join(projectDirectory, it));
 
     allTSReverseDependencies.push(...reverseDependencies, ...changedModulePaths);
     allTSReverseDependencyChain.push(...reverseDependencyChain);
@@ -103,11 +103,11 @@ const runTSSA = (tssaCLIArguments: readonly string[]): void => {
     const forwardDependencyChain = getTopologicallyOrderedTransitiveDependencyChainFromTSModules(
       forwardDependencyGraph,
       changedModulePaths
-    );
+    ).map((it) => join(projectDirectory, it));
     const reverseDependencyChain = getTopologicallyOrderedTransitiveDependencyChainFromTSModules(
       reverseDependencyGraph,
       changedModulePaths
-    );
+    ).map((it) => join(projectDirectory, it));
 
     allCssDependencyChain.push(...forwardDependencyChain, ...reverseDependencyChain);
   });
