@@ -7,7 +7,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: ${{ github.head_ref }}
+          ref: ${{ github.event.pull_request.head.sha }}
       - name: Fetch all commits in this branch
         run: git fetch --depth=1 origin +refs/heads/${{github.base_ref}}:refs/remotes/origin/${{github.base_ref}}
       - uses: actions/setup-node@v2-beta
@@ -21,7 +21,7 @@ jobs:
       - name: Compile
         run: yarn tsc
       - name: Analyze
-        run: yarn start . -- $(git diff --name-only origin/${{ github.base_ref }}..origin/${{ github.head_ref }})
+        run: yarn start . -- $(git diff --name-only origin/${{ github.base_ref }}..${{ github.event.pull_request.head.sha }}
         env:
           GITHUB_TOKEN: ${{ secrets.DEV_SAM_BOT_TOKEN || secrets.GITHUB_TOKEN }}
           GITHUB_PR_NUMBER: ${{ github.event.number }}
