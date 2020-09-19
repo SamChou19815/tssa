@@ -23,6 +23,5 @@ jobs:
       - name: Analyze
         run: yarn start . -- $(git diff --name-only origin/${{ github.base_ref }}..${{ github.head_ref }})
         env:
-          USER_LOGIN: dev-sam-bot
-          GITHUB_TOKEN: ${{ secrets.DEV_SAM_BOT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.DEV_SAM_BOT_TOKEN || secrets.GITHUB_TOKEN }}
           GITHUB_PR_NUMBER: ${{ github.event.number }}
