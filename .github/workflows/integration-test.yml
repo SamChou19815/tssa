@@ -21,7 +21,7 @@ jobs:
       - name: Compile
         run: yarn tsc
       - name: Analyze
-        run: yarn start . -- $(git diff --name-only origin/${{ github.base_ref }}..${{ github.event.pull_request.head.sha }})
+        run: yarn start . -- $(git diff --name-only origin/${{ github.base_ref }}..origin/${{ github.head_ref }})
         env:
           GITHUB_TOKEN: ${{ secrets.DEV_SAM_BOT_TOKEN || secrets.GITHUB_TOKEN }}
           GITHUB_PR_NUMBER: ${{ github.event.number }}
