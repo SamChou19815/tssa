@@ -9,7 +9,9 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Fetch all commits in this branch
-        run: git fetch --depth=1 origin +refs/heads/${{github.base_ref}}:refs/remotes/origin/${{github.base_ref}}
+        run: |
+          git fetch --depth=1 origin +refs/heads/${{github.base_ref}}:refs/remotes/origin/${{github.base_ref}}
+          git fetch --depth=1 origin +refs/heads/${{github.head_ref}}:refs/remotes/origin/${{github.head_ref}}
       - uses: actions/setup-node@v2-beta
       - uses: actions/cache@v2
         with:
