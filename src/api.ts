@@ -148,7 +148,7 @@ ${dependencyListToString(allCssDependencyChain)}`;
   const analysisResultString =
     analysisResultStrings.length === 0 ? 'No notable changes.' : analysisResultStrings.join('\n\n');
 
-  if (process.env.CI && process.env.GITHUB_TOKEN && process.env.USER_LOGIN) {
+  if (process.env.CI && process.env.GITHUB_TOKEN) {
     commentOnPullRequest('[tssa]\n\n', analysisResultString);
   }
 

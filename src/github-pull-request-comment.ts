@@ -18,10 +18,8 @@ const commentOnPullRequest = async (prefix: string, comment: string): Promise<vo
     repo,
     issue_number: number,
   });
-  const existingCommentFromThisPackage = comments.find(
-    (existingComment) =>
-      existingComment.user.login === process.env.USER_LOGIN &&
-      existingComment.body.startsWith(prefix)
+  const existingCommentFromThisPackage = comments.find((existingComment) =>
+    existingComment.body.startsWith(prefix)
   );
   const body = `${prefix}${comment}`;
   if (existingCommentFromThisPackage == null) {
