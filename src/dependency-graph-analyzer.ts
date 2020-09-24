@@ -25,7 +25,9 @@ const getDependencyChainForTSModule = (graph: Graph, tsModule: string): readonly
       parentChain.push(node);
       const firstIndex = parentChain.indexOf(node);
       const cyclicDependencyChain = parentChain.slice(firstIndex, parentChain.length).join(' -> ');
-      throw new Error(`Cyclic dependency detected: ${cyclicDependencyChain}`);
+      // eslint-disable-next-line no-console
+      console.error(`Cyclic dependency detected: ${cyclicDependencyChain}`);
+      return;
     }
 
     // Visit dependencies
