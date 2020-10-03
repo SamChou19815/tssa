@@ -46,7 +46,6 @@ export default class TypeScriptProjects {
       projectMappings.set(projectDirectory, project);
 
       project.getSourceFiles().forEach((sourceFile) => {
-        console.log(projectDirectory, sourceFile.getFilePath());
         sourceFileMapping.set(
           join(projectDirectory, relative(projectDirectory, sourceFile.getFilePath())),
           sourceFile

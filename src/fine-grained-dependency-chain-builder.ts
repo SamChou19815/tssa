@@ -37,6 +37,27 @@ const getDirectReferencingSymbols = (
   return referencingSymbols;
 };
 
+const getSymbolTransitiveReferencingChain = (
+  projects: TypeScriptProjects,
+  symbols: readonly SourceFileDefinedSymbol[]
+): readonly SourceFileDefinedSymbol[] => {
+  // Stored format: filePath:::name
+  const symbolHashSet = new Set<string>();
+  const chain: SourceFileDefinedSymbol[] = [];
+
+  const hash = (symbol: SourceFileDefinedSymbol) => `${symbol.sourceFilePath}:::${symbol.name}`;
+  const visit = (symbol: SourceFileDefinedSymbol) => {
+    if (symbolHashSet.has(hash(symbol))) return;
+    chain.push(symbol);
+    symbolHashSet.add(hash(symbol));
+    getDirectReferencingSymbols(projects, symbol).forEach(visit);
+  };
+
+  symbols.forEach(visit);
+
+  return chain;
+};
+
 /**
  * Build a fine-grained function-level dependency chain based on a change's line number intervals.
  *
@@ -61,10 +82,8 @@ const buildFineGrainedDependencyChain = (
         )
       )
     );
-  // TODO: implementing topologically sort here
-  affectedSymbols.forEach((it) => getDirectReferencingSymbols(projects, it));
 
-  return affectedSymbols;
+  return getSymbolTransitiveReferencingChain(projects, affectedSymbols);
 };
 
 export default buildFineGrainedDependencyChain;
