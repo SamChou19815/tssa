@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
 
-import { readFileSync } from 'fs';
 import { join, normalize } from 'path';
 
 import partitionProjectChangedModulePaths from './changed-modules-partition';
@@ -20,11 +19,11 @@ const dependencyListToString = (list: readonly string[]): string =>
 const sourceFileDefinedSymbolToString = (symbol: SourceFileDefinedSymbol): string =>
   `${symbol.sourceFilePath} > ${symbol.name}`;
 
-const getTSSAResultString = (projects: readonly string[]): string => {
+const getTSSAResultString = (projects: readonly string[], diffString: string): string => {
   const changedTSFiles: ChangedFile[] = [];
   const changedCssPaths: string[] = [];
 
-  processGitDiffString(readFileSync(process.stdin.fd).toString()).forEach((changedFile) => {
+  processGitDiffString(diffString).forEach((changedFile) => {
     const normalizedPath = normalize(changedFile.sourceFilePath);
     if (normalizedPath.endsWith('.css') || normalizedPath.endsWith('.scss')) {
       changedCssPaths.push(normalizedPath);
