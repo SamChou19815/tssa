@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-import { join, normalize } from 'path';
+import { normalize } from 'path';
 
 import partitionProjectChangedModulePaths from './changed-modules-partition';
 import { getTopologicallyOrderedTransitiveDependencyChainFromTSModules } from './dependency-graph-analyzer';
@@ -8,7 +8,6 @@ import {
   buildDependencyGraph,
   buildReverseDependencyGraphFromDependencyGraph,
 } from './dependency-graph-builder';
-import type { Graph } from './dependency-graph-types';
 import buildFineGrainedDependencyChain from './fine-grained-dependency-chain-builder';
 import processGitDiffString, { ChangedFile } from './git-diff-processor';
 import TypeScriptProjects, { SourceFileDefinedSymbol } from './typescript-projects';
@@ -48,9 +47,10 @@ const getTSSAResultString = (projects: readonly string[], diffString: string): s
     changedCssPaths,
     (it) => it
   );
-  const typescriptProjects = new TypeScriptProjects(
-    [...projectAndChangedTSPaths, ...projectAndChangedCssPaths].map((it) => it.projectPath)
+  const relevantProjectPaths = [...projectAndChangedTSPaths, ...projectAndChangedCssPaths].map(
+    (it) => it.projectPath
   );
+  const typescriptProjects = new TypeScriptProjects(relevantProjectPaths);
 
   const changedTSFileReferenceAnalysisResult = changedTSFiles.map(
     (changedFile) =>
@@ -65,35 +65,20 @@ const getTSSAResultString = (projects: readonly string[], diffString: string): s
   );
 
   let allCssDependencyChain: string[] = [];
-  const graphs: Record<string, readonly [Graph, Graph]> = {};
+  const forwardDependencyGraph = buildDependencyGraph(typescriptProjects, relevantProjectPaths);
+  const reverseDependencyGraph = buildReverseDependencyGraphFromDependencyGraph(
+    forwardDependencyGraph
+  );
 
-  projectAndChangedCssPaths.forEach(({ projectPath, changedModulePaths }) => {
-    if (changedModulePaths.length === 0) {
-      return;
-    }
-    if (graphs[projectPath] == null) {
-      const forwardDependencyGraph = buildDependencyGraph(typescriptProjects, projectPath);
-      const reverseDependencyGraph = buildReverseDependencyGraphFromDependencyGraph(
-        forwardDependencyGraph
-      );
-      graphs[projectPath] = [forwardDependencyGraph, reverseDependencyGraph];
-    }
-  });
-
-  projectAndChangedCssPaths.forEach(({ projectPath: projectDirectory, changedModulePaths }) => {
-    if (changedModulePaths.length === 0) {
-      return;
-    }
-    const [forwardDependencyGraph, reverseDependencyGraph] = graphs[projectDirectory];
-
+  changedCssPaths.forEach((changedCssPath) => {
     const forwardDependencyChain = getTopologicallyOrderedTransitiveDependencyChainFromTSModules(
       forwardDependencyGraph,
-      changedModulePaths
-    ).map((it) => join(projectDirectory, it));
+      [changedCssPath]
+    );
     const reverseDependencyChain = getTopologicallyOrderedTransitiveDependencyChainFromTSModules(
       reverseDependencyGraph,
-      changedModulePaths
-    ).map((it) => join(projectDirectory, it));
+      [changedCssPath]
+    );
 
     allCssDependencyChain.push(...forwardDependencyChain, ...reverseDependencyChain);
   });

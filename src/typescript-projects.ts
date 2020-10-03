@@ -1,4 +1,4 @@
-import { join, relative } from 'path';
+import { dirname, join, relative, resolve } from 'path';
 
 import {
   Project,
@@ -32,11 +32,14 @@ export default class TypeScriptProjects {
 
   readonly projectMappings: ReadonlyMap<string, Project>;
 
+  private readonly projectSourceFiles: ReadonlyMap<string, readonly string[]>;
+
   private readonly sourceFileMapping: ReadonlyMap<string, SourceFile>;
 
   constructor(projectDirectories: readonly string[]) {
     this.projectDirectories = new Set(projectDirectories);
     const projectMappings = new Map<string, Project>();
+    const projectSourceFiles = new Map<string, readonly string[]>();
     const sourceFileMapping = new Map<string, SourceFile>();
 
     this.projectDirectories.forEach((projectDirectory) => {
@@ -45,16 +48,24 @@ export default class TypeScriptProjects {
       });
       projectMappings.set(projectDirectory, project);
 
-      project.getSourceFiles().forEach((sourceFile) => {
-        sourceFileMapping.set(
-          join(projectDirectory, relative(projectDirectory, sourceFile.getFilePath())),
-          sourceFile
+      const projectSourceFilesList = project.getSourceFiles().map((sourceFile) => {
+        const relativeSourceFilePathAgainstRoot = join(
+          projectDirectory,
+          relative(projectDirectory, sourceFile.getFilePath())
         );
+        sourceFileMapping.set(relativeSourceFilePathAgainstRoot, sourceFile);
+        return relativeSourceFilePathAgainstRoot;
       });
+      projectSourceFiles.set(projectDirectory, projectSourceFilesList);
     });
 
     this.projectMappings = projectMappings;
+    this.projectSourceFiles = projectSourceFiles;
     this.sourceFileMapping = sourceFileMapping;
+  }
+
+  getProjectSourceFiles(projectDirectory: string): readonly string[] {
+    return this.projectSourceFiles.get(projectDirectory) ?? [];
   }
 
   getDefinedSymbols(sourceFilePath: string): readonly SourceFileDefinedSymbol[] {
@@ -81,5 +92,36 @@ export default class TypeScriptProjects {
       });
     });
     return symbols;
+  }
+
+  getImportedModulePaths(sourceFilePath: string): readonly string[] {
+    const sourceFile = this.sourceFileMapping.get(sourceFilePath);
+    if (sourceFile == null) return [];
+
+    const imports: string[] = [];
+    sourceFile.getImportDeclarations().forEach((oneImport) => {
+      const importedSourceFile = oneImport.getModuleSpecifierSourceFile();
+
+      if (importedSourceFile === undefined) {
+        // Not useless, might be css module!
+        let rawImportedModuleText = oneImport.getModuleSpecifier().getText(false);
+        rawImportedModuleText = rawImportedModuleText.slice(1, rawImportedModuleText.length - 1);
+        if (!rawImportedModuleText.endsWith('.css') && !rawImportedModuleText.endsWith('.scss')) {
+          return;
+        }
+        const resolvedCssSourceFilePath = resolve(
+          dirname(sourceFile.getFilePath()),
+          rawImportedModuleText
+        );
+        imports.push(relative('.', resolvedCssSourceFilePath));
+        return;
+      }
+      const filePath = importedSourceFile.getFilePath();
+      if (filePath.includes('node_modules')) {
+        return;
+      }
+      imports.push(relative('.', filePath));
+    });
+    return imports;
   }
 }

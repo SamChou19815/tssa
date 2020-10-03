@@ -1,49 +1,18 @@
-import * as path from 'path';
-
-import type { SourceFile } from 'ts-morph';
-
 import type { Graph } from './dependency-graph-types';
 import type TypeScriptProjects from './typescript-projects';
 
-const getImports = (projectDirectory: string, sourceFile: SourceFile): readonly string[] => {
-  const imports: string[] = [];
-  sourceFile.getImportDeclarations().forEach((oneImport) => {
-    const importedSourceFile = oneImport.getModuleSpecifierSourceFile();
-
-    if (importedSourceFile === undefined) {
-      // Not useless, might be css module!
-      let rawImportedModuleText = oneImport.getModuleSpecifier().getText(false);
-      rawImportedModuleText = rawImportedModuleText.slice(1, rawImportedModuleText.length - 1);
-      if (!rawImportedModuleText.endsWith('.css') && !rawImportedModuleText.endsWith('.scss')) {
-        return;
-      }
-      const resolvedCssSourceFilePath = path.resolve(
-        path.dirname(sourceFile.getFilePath()),
-        rawImportedModuleText
-      );
-      imports.push(path.relative(projectDirectory, resolvedCssSourceFilePath));
-      return;
-    }
-    const filePath = importedSourceFile.getFilePath();
-    if (filePath.includes('node_modules')) {
-      return;
-    }
-    imports.push(path.relative(projectDirectory, filePath));
-  });
-  return imports;
-};
-
 export const buildDependencyGraph = (
   projects: TypeScriptProjects,
-  projectDirectory: string
+  projectDirectories: readonly string[]
 ): Graph => {
-  const project = projects.projectMappings.get(projectDirectory);
-  if (project == null) throw new Error();
   const graph: Graph = {};
-  project.getSourceFiles().forEach((sourceFile) => {
-    const sourceFilePath = path.relative(projectDirectory, sourceFile.getFilePath());
-    graph[sourceFilePath] = getImports(projectDirectory, sourceFile);
+
+  projectDirectories.forEach((projectDirectory) => {
+    projects.getProjectSourceFiles(projectDirectory).forEach((sourceFilePath) => {
+      graph[sourceFilePath] = projects.getImportedModulePaths(sourceFilePath);
+    });
   });
+
   return graph;
 };
 
