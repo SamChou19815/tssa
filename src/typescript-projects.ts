@@ -1,6 +1,23 @@
 import { join, relative } from 'path';
 
-import { Project, SourceFile } from 'ts-morph';
+import {
+  Project,
+  SourceFile,
+  VariableDeclaration,
+  FunctionDeclaration,
+  ClassDeclaration,
+} from 'ts-morph';
+
+export type SourceFileDefinedSymbol = {
+  readonly sourceFilePath: string;
+  readonly name: string;
+  readonly topLevelDeclaration: VariableDeclaration | FunctionDeclaration | ClassDeclaration;
+  readonly isExported: boolean;
+  /** Starts at 1 */
+  readonly startLineNumber: number;
+  /** Starts at 1 */
+  readonly endLineNumber: number;
+};
 
 /**
  * TypeScriptProjects is more than a wrapper around `ts-morph`'s `Project` to only expose methods
@@ -13,7 +30,7 @@ export default class TypeScriptProjects {
 
   readonly projectMappings: ReadonlyMap<string, Project>;
 
-  readonly sourceFileMapping: ReadonlyMap<string, SourceFile>;
+  private readonly sourceFileMapping: ReadonlyMap<string, SourceFile>;
 
   constructor(projectDirectories: readonly string[]) {
     this.projectDirectories = new Set(projectDirectories);
@@ -35,5 +52,29 @@ export default class TypeScriptProjects {
 
     this.projectMappings = projectMappings;
     this.sourceFileMapping = sourceFileMapping;
+  }
+
+  getDefinedSymbols(sourceFilePath: string): readonly SourceFileDefinedSymbol[] {
+    const sourceFile = this.sourceFileMapping.get(sourceFilePath);
+    if (sourceFile == null) return [];
+    const symbols: SourceFileDefinedSymbol[] = [];
+    // Looks like these are the only meaningful top-level containers for code.
+    [
+      ...sourceFile.getVariableDeclarations(),
+      ...sourceFile.getFunctions(),
+      ...sourceFile.getClasses(),
+    ].forEach((topLevelDeclaration) => {
+      const name = topLevelDeclaration.getName();
+      if (name == null) return;
+      symbols.push({
+        sourceFilePath,
+        name,
+        topLevelDeclaration,
+        isExported: topLevelDeclaration.isExported(),
+        startLineNumber: topLevelDeclaration.getStartLineNumber(),
+        endLineNumber: topLevelDeclaration.getEndLineNumber(),
+      });
+    });
+    return symbols;
   }
 }
