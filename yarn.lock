@@ -1271,12 +1271,14 @@ __metadata:
     "@babel/preset-typescript": ^7.10.4
     "@dev-sam/eslint-config-common": 0.17.0
     "@octokit/rest": ^18.0.6
+    "@types/diff": ^4.0.2
     "@types/jest": ^26.0.14
     "@types/node": ^14.11.2
     "@typescript-eslint/eslint-plugin": ^4.3.0
     "@typescript-eslint/parser": ^4.3.0
     "@vercel/ncc": ^0.24.1
     babel-jest: ^26.3.0
+    diff: ^4.0.2
     eslint: ^7.10.0
     eslint-import-resolver-node: ^0.3.4
     eslint-plugin-import: ^2.20.1
@@ -1780,6 +1782,13 @@ __metadata:
   version: 1.1.1
   resolution: "@types/color-name@npm:1.1.1"
   checksum: 8311db94a9c4ecd247763b81e783ee49d87678b4ce6a7ee502e2bd5cea242b7357804a04855db009f713174bc654cc0c01c7303d40d757e5d710f5ac0368500f
+  languageName: node
+  linkType: hard
+
+"@types/diff@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "@types/diff@npm:4.0.2"
+  checksum: 22333cc87c525bb61d5603e306fff5e971d2a15658fcf2b929db10588b6fcb3878dd5aeff05b502edb3cbb96e1cbb0d7292c4590f88a9baa28941060f1a5bf73
   languageName: node
   linkType: hard
 
@@ -3013,6 +3022,13 @@ __metadata:
   version: 26.3.0
   resolution: "diff-sequences@npm:26.3.0"
   checksum: 8d15e420a34976858cd7e867868e9baca8c5513d97530fd27eaf54ba72de92fc9763b9261c321efdb2e66feec55074b55b198815ad37f038d5d183fe094cb751
+  languageName: node
+  linkType: hard
+
+"diff@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "diff@npm:4.0.2"
+  checksum: 81b5cd7ddde6f0ba2a532d434cfdca365aedd6cc62bb133e851e66e071d40382a30924a07c1034bd3d5a2e332146f64514b73c06fe2ebc0490a67f0c98da79fb
   languageName: node
   linkType: hard
 
