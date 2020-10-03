@@ -1,8 +1,9 @@
 import * as path from 'path';
 
-import { Project, SourceFile } from 'ts-morph';
+import type { SourceFile } from 'ts-morph';
 
 import type { Graph } from './dependency-graph-types';
+import type TypeScriptProjects from './typescript-projects';
 
 const getImports = (projectDirectory: string, sourceFile: SourceFile): readonly string[] => {
   const imports: string[] = [];
@@ -32,15 +33,16 @@ const getImports = (projectDirectory: string, sourceFile: SourceFile): readonly 
   return imports;
 };
 
-export const buildDependencyGraph = (projectDirectory: string): Graph => {
-  const project = new Project({
-    tsConfigFilePath: path.join(projectDirectory, 'tsconfig.json'),
-  });
+export const buildDependencyGraph = (
+  projects: TypeScriptProjects,
+  projectDirectory: string
+): Graph => {
+  const project = projects.projectMappings.get(projectDirectory);
+  if (project == null) throw new Error();
   const graph: Graph = {};
   project.getSourceFiles().forEach((sourceFile) => {
     const sourceFilePath = path.relative(projectDirectory, sourceFile.getFilePath());
-    const imports = getImports(projectDirectory, sourceFile);
-    graph[sourceFilePath] = imports;
+    graph[sourceFilePath] = getImports(projectDirectory, sourceFile);
   });
   return graph;
 };

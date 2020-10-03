@@ -14,6 +14,7 @@ import {
 } from './dependency-graph-builder';
 import type { Graph } from './dependency-graph-types';
 import commentOnPullRequest from './github-pull-request-comment';
+import TypeScriptProjects from './typescript-projects';
 
 const dependencyListToString = (list: readonly string[]): string =>
   list.map((it) => `> ${it}`).join('\n');
@@ -28,6 +29,9 @@ const runTSSA = (tssaCLIArguments: readonly string[]): void => {
 
   const projectAndChangedTSPaths = partitionProjectChangedModulePaths(projects, changedTSPaths);
   const projectAndChangedCssPaths = partitionProjectChangedModulePaths(projects, changedCssPaths);
+  const typescriptProjects = new TypeScriptProjects(
+    [...projectAndChangedTSPaths, ...projectAndChangedCssPaths].map((it) => it.projectPath)
+  );
 
   let allTSReverseDependencies: string[] = [];
   let allTSReverseDependencyChain: string[] = [];
@@ -40,7 +44,7 @@ const runTSSA = (tssaCLIArguments: readonly string[]): void => {
         return;
       }
       if (graphs[projectPath] == null) {
-        const forwardDependencyGraph = buildDependencyGraph(projectPath);
+        const forwardDependencyGraph = buildDependencyGraph(typescriptProjects, projectPath);
         const reverseDependencyGraph = buildReverseDependencyGraphFromDependencyGraph(
           forwardDependencyGraph
         );
