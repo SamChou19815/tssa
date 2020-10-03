@@ -1,3 +1,4 @@
+import { realpathSync } from 'fs';
 import { dirname, join, relative, resolve } from 'path';
 
 import {
@@ -49,9 +50,9 @@ export default class TypeScriptProjects {
       projectMappings.set(projectDirectory, project);
 
       const projectSourceFilesList = project.getSourceFiles().map((sourceFile) => {
-        const relativeSourceFilePathAgainstRoot = join(
-          projectDirectory,
-          relative(projectDirectory, sourceFile.getFilePath())
+        const relativeSourceFilePathAgainstRoot = relative(
+          '.',
+          realpathSync(sourceFile.getFilePath())
         );
         sourceFileMapping.set(relativeSourceFilePathAgainstRoot, sourceFile);
         return relativeSourceFilePathAgainstRoot;
@@ -116,7 +117,7 @@ export default class TypeScriptProjects {
         imports.push(relative('.', resolvedCssSourceFilePath));
         return;
       }
-      const filePath = importedSourceFile.getFilePath();
+      const filePath = realpathSync(importedSourceFile.getFilePath());
       if (filePath.includes('node_modules')) {
         return;
       }
