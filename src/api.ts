@@ -12,7 +12,6 @@ import {
 import type { Graph } from './dependency-graph-types';
 import buildFineGrainedDependencyChain from './fine-grained-dependency-chain-builder';
 import processGitDiffString, { ChangedFile } from './git-diff-processor';
-import commentOnPullRequest from './github-pull-request-comment';
 import TypeScriptProjects, { SourceFileDefinedSymbol } from './typescript-projects';
 
 const dependencyListToString = (list: readonly string[]): string =>
@@ -21,7 +20,7 @@ const dependencyListToString = (list: readonly string[]): string =>
 const sourceFileDefinedSymbolToString = (symbol: SourceFileDefinedSymbol): string =>
   `${symbol.sourceFilePath} > ${symbol.name}`;
 
-const runTSSA = (projects: readonly string[]): void => {
+const getTSSAResultString = (projects: readonly string[]): string => {
   const changedTSFiles: ChangedFile[] = [];
   const changedCssPaths: string[] = [];
 
@@ -121,14 +120,9 @@ ${dependencyListToString(allCssDependencyChain)}`;
     ...tsDependencyAnalysisResultStrings,
     cssAnalysisResultString,
   ].filter((it): it is string => it != null);
-  const analysisResultString =
-    analysisResultStrings.length === 0 ? 'No notable changes.' : analysisResultStrings.join('\n\n');
-
-  if (process.env.CI && process.env.GITHUB_TOKEN) {
-    commentOnPullRequest('[tssa]\n\n', analysisResultString);
-  }
-
-  console.log(analysisResultString);
+  return analysisResultStrings.length === 0
+    ? 'No notable changes.'
+    : analysisResultStrings.join('\n\n');
 };
 
-export default runTSSA;
+export default getTSSAResultString;
