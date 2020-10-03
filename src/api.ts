@@ -4,21 +4,22 @@ import { readFileSync } from 'fs';
 import { join, normalize } from 'path';
 
 import partitionProjectChangedModulePaths from './changed-modules-partition';
-import {
-  getDependenciesFromTSModules,
-  getTopologicallyOrderedTransitiveDependencyChainFromTSModules,
-} from './dependency-graph-analyzer';
+import { getTopologicallyOrderedTransitiveDependencyChainFromTSModules } from './dependency-graph-analyzer';
 import {
   buildDependencyGraph,
   buildReverseDependencyGraphFromDependencyGraph,
 } from './dependency-graph-builder';
 import type { Graph } from './dependency-graph-types';
+import buildFineGrainedDependencyChain from './fine-grained-dependency-chain-builder';
 import processGitDiffString, { ChangedFile } from './git-diff-processor';
 import commentOnPullRequest from './github-pull-request-comment';
-import TypeScriptProjects from './typescript-projects';
+import TypeScriptProjects, { SourceFileDefinedSymbol } from './typescript-projects';
 
 const dependencyListToString = (list: readonly string[]): string =>
-  list.map((it) => `> ${it}`).join('\n');
+  list.map((it) => `> \`${it}\``).join('\n');
+
+const sourceFileDefinedSymbolToString = (symbol: SourceFileDefinedSymbol): string =>
+  `${symbol.sourceFilePath} > ${symbol.name}`;
 
 const runTSSA = (projects: readonly string[]): void => {
   const changedTSFiles: ChangedFile[] = [];
@@ -53,46 +54,32 @@ const runTSSA = (projects: readonly string[]): void => {
     [...projectAndChangedTSPaths, ...projectAndChangedCssPaths].map((it) => it.projectPath)
   );
 
-  let allTSReverseDependencies: string[] = [];
-  let allTSReverseDependencyChain: string[] = [];
+  const changedTSFileReferenceAnalysisResult = changedTSFiles.map(
+    (changedFile) =>
+      [
+        changedFile.sourceFilePath,
+        buildFineGrainedDependencyChain(
+          typescriptProjects,
+          changedFile.sourceFilePath,
+          changedFile.changedLineIntervals
+        ),
+      ] as const
+  );
+
   let allCssDependencyChain: string[] = [];
   const graphs: Record<string, readonly [Graph, Graph]> = {};
 
-  [...projectAndChangedTSPaths, ...projectAndChangedCssPaths].forEach(
-    ({ projectPath, changedModulePaths }) => {
-      if (changedModulePaths.length === 0) {
-        return;
-      }
-      if (graphs[projectPath] == null) {
-        const forwardDependencyGraph = buildDependencyGraph(typescriptProjects, projectPath);
-        const reverseDependencyGraph = buildReverseDependencyGraphFromDependencyGraph(
-          forwardDependencyGraph
-        );
-        graphs[projectPath] = [forwardDependencyGraph, reverseDependencyGraph];
-      }
-    }
-  );
-
-  projectAndChangedTSPaths.forEach(({ projectPath: projectDirectory, changedModulePaths }) => {
+  projectAndChangedCssPaths.forEach(({ projectPath, changedModulePaths }) => {
     if (changedModulePaths.length === 0) {
       return;
     }
-    const [, reverseDependencyGraph] = graphs[projectDirectory];
-
-    const reverseDependencies = getDependenciesFromTSModules(
-      reverseDependencyGraph,
-      changedModulePaths
-    ).map((it) => join(projectDirectory, it));
-    const reverseDependencyChain = getTopologicallyOrderedTransitiveDependencyChainFromTSModules(
-      reverseDependencyGraph,
-      changedModulePaths
-    ).map((it) => join(projectDirectory, it));
-
-    allTSReverseDependencies.push(
-      ...reverseDependencies,
-      ...changedModulePaths.map((it) => join(projectDirectory, it))
-    );
-    allTSReverseDependencyChain.push(...reverseDependencyChain);
+    if (graphs[projectPath] == null) {
+      const forwardDependencyGraph = buildDependencyGraph(typescriptProjects, projectPath);
+      const reverseDependencyGraph = buildReverseDependencyGraphFromDependencyGraph(
+        forwardDependencyGraph
+      );
+      graphs[projectPath] = [forwardDependencyGraph, reverseDependencyGraph];
+    }
   });
 
   projectAndChangedCssPaths.forEach(({ projectPath: projectDirectory, changedModulePaths }) => {
@@ -112,25 +99,17 @@ const runTSSA = (projects: readonly string[]): void => {
 
     allCssDependencyChain.push(...forwardDependencyChain, ...reverseDependencyChain);
   });
-  allTSReverseDependencies = Array.from(new Set(allTSReverseDependencies));
-  allTSReverseDependencyChain = Array.from(new Set(allTSReverseDependencyChain));
   allCssDependencyChain = Array.from(new Set(allCssDependencyChain));
 
-  const tsDirectReverseDependencyAnalysisResultString =
-    allTSReverseDependencies.length === 0
-      ? null
-      : `Modules that your changes in TS code will directly affect:
+  const tsDependencyAnalysisResultStrings = changedTSFileReferenceAnalysisResult.map(
+    ([changedFilePath, symbols]) => {
+      if (symbols.length === 0) return null;
+      return `Your changes in ${changedFilePath} may directly or indirectly affect:
 
-${dependencyListToString(allTSReverseDependencies)}`;
-  const tsTransitiveReverseDependencyAnalysisResultString =
-    allTSReverseDependencyChain.length === 0
-      ? null
-      : `<details>
-  <summary>Modules that your changes in TS code may indirectly affect:</summary>
+${dependencyListToString(symbols.map(sourceFileDefinedSymbolToString))}`;
+    }
+  );
 
-${dependencyListToString(allTSReverseDependencyChain)}
-
-</details>`;
   const cssAnalysisResultString =
     allCssDependencyChain.length === 0
       ? null
@@ -139,8 +118,7 @@ ${dependencyListToString(allTSReverseDependencyChain)}
 ${dependencyListToString(allCssDependencyChain)}`;
 
   const analysisResultStrings = [
-    tsDirectReverseDependencyAnalysisResultString,
-    tsTransitiveReverseDependencyAnalysisResultString,
+    ...tsDependencyAnalysisResultStrings,
     cssAnalysisResultString,
   ].filter((it): it is string => it != null);
   const analysisResultString =
