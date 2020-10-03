@@ -20,7 +20,7 @@ export default class TypeScriptProjects {
     const projectMappings = new Map<string, Project>();
     const sourceFileMapping = new Map<string, SourceFile>();
 
-    projectDirectories.forEach((projectDirectory) => {
+    this.projectDirectories.forEach((projectDirectory) => {
       const project = new Project({
         tsConfigFilePath: join(projectDirectory, 'tsconfig.json'),
       });
