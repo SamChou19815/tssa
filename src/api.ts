@@ -1,8 +1,9 @@
 /* eslint-disable no-console */
 
-import { join, normalize } from 'path';
+import { join } from 'path';
 
 import partitionProjectChangedModulePaths from './changed-modules-partition';
+import parseCommandLineArguments from './cli-arguments-parser';
 import {
   getDependenciesFromTSModules,
   getTopologicallyOrderedTransitiveDependencyChainFromTSModules,
@@ -19,38 +20,11 @@ const dependencyListToString = (list: readonly string[]): string =>
 
 /**
  * Run TSSA with supplied arguments.
- * The arguments are separated by `--`. Parts left of `--` are interpreted as paths to TS projects,
- * and parts right of `--` are intepreted as changed file paths. All paths supplied in the arguments
- * are relative to repository root.
  *
- * @param tssaCLIArguments
+ * @param tssaCLIArguments see `parseCommandLineArguments`
  */
 const runTSSA = (tssaCLIArguments: readonly string[]): void => {
-  const projects: string[] = [];
-  const changedTSPaths: string[] = [];
-  const changedCssPaths: string[] = [];
-
-  let processedAllProjectsPath = false;
-  tssaCLIArguments.forEach((processArgument) => {
-    if (processedAllProjectsPath) {
-      const normalizedPath = normalize(processArgument);
-      if (normalizedPath.endsWith('.css') || normalizedPath.endsWith('.scss')) {
-        changedCssPaths.push(normalizedPath);
-      } else if (
-        normalizedPath.endsWith('.ts') ||
-        normalizedPath.endsWith('.tsx') ||
-        normalizedPath.endsWith('.js') ||
-        normalizedPath.endsWith('.cjs') ||
-        normalizedPath.endsWith('.jsx')
-      ) {
-        changedTSPaths.push(normalizedPath);
-      }
-    } else if (processArgument === '--') {
-      processedAllProjectsPath = true;
-    } else {
-      projects.push(normalize(processArgument));
-    }
-  });
+  const { projects, changedTSPaths, changedCssPaths } = parseCommandLineArguments(tssaCLIArguments);
 
   const projectAndChangedTSPaths = partitionProjectChangedModulePaths(projects, changedTSPaths);
   const projectAndChangedCssPaths = partitionProjectChangedModulePaths(projects, changedCssPaths);
