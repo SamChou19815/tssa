@@ -50,7 +50,7 @@ const getTSSAResultString = (projects: readonly string[], diffString: string): s
   const relevantProjectPaths = [...projectAndChangedTSPaths, ...projectAndChangedCssPaths].map(
     (it) => it.projectPath
   );
-  const typescriptProjects = new TypeScriptProjects(relevantProjectPaths);
+  const typescriptProjects = new TypeScriptProjects(projects);
 
   const changedTSFileReferenceAnalysisResult = changedTSFiles.map(
     (changedFile) =>
