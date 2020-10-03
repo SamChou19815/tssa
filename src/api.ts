@@ -1,9 +1,9 @@
 /* eslint-disable no-console */
 
-import { join } from 'path';
+import { readFileSync } from 'fs';
+import { join, normalize } from 'path';
 
 import partitionProjectChangedModulePaths from './changed-modules-partition';
-import parseCommandLineArguments from './cli-arguments-parser';
 import {
   getDependenciesFromTSModules,
   getTopologicallyOrderedTransitiveDependencyChainFromTSModules,
@@ -13,22 +13,42 @@ import {
   buildReverseDependencyGraphFromDependencyGraph,
 } from './dependency-graph-builder';
 import type { Graph } from './dependency-graph-types';
+import processGitDiffString, { ChangedFile } from './git-diff-processor';
 import commentOnPullRequest from './github-pull-request-comment';
 import TypeScriptProjects from './typescript-projects';
 
 const dependencyListToString = (list: readonly string[]): string =>
   list.map((it) => `> ${it}`).join('\n');
 
-/**
- * Run TSSA with supplied arguments.
- *
- * @param tssaCLIArguments see `parseCommandLineArguments`
- */
-const runTSSA = (tssaCLIArguments: readonly string[]): void => {
-  const { projects, changedTSPaths, changedCssPaths } = parseCommandLineArguments(tssaCLIArguments);
+const runTSSA = (projects: readonly string[]): void => {
+  const changedTSFiles: ChangedFile[] = [];
+  const changedCssPaths: string[] = [];
 
-  const projectAndChangedTSPaths = partitionProjectChangedModulePaths(projects, changedTSPaths);
-  const projectAndChangedCssPaths = partitionProjectChangedModulePaths(projects, changedCssPaths);
+  processGitDiffString(readFileSync(process.stdin.fd).toString()).forEach((changedFile) => {
+    const normalizedPath = normalize(changedFile.sourceFilePath);
+    if (normalizedPath.endsWith('.css') || normalizedPath.endsWith('.scss')) {
+      changedCssPaths.push(normalizedPath);
+    } else if (
+      normalizedPath.endsWith('.ts') ||
+      normalizedPath.endsWith('.tsx') ||
+      normalizedPath.endsWith('.js') ||
+      normalizedPath.endsWith('.cjs') ||
+      normalizedPath.endsWith('.jsx')
+    ) {
+      changedTSFiles.push({ ...changedFile, sourceFilePath: normalizedPath });
+    }
+  });
+
+  const projectAndChangedTSPaths = partitionProjectChangedModulePaths(
+    projects,
+    changedTSFiles,
+    (it) => it.sourceFilePath
+  );
+  const projectAndChangedCssPaths = partitionProjectChangedModulePaths(
+    projects,
+    changedCssPaths,
+    (it) => it
+  );
   const typescriptProjects = new TypeScriptProjects(
     [...projectAndChangedTSPaths, ...projectAndChangedCssPaths].map((it) => it.projectPath)
   );
