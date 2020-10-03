@@ -6,6 +6,7 @@
 !.yarn/releases
 !.yarn/plugins
 !.yarn/versions
+!.yarn/sdks
 **/node_modules
 **/.pnp
 **/.pnp.js
