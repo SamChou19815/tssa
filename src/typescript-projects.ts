@@ -13,6 +13,8 @@ export type SourceFileDefinedSymbol = {
   readonly name: string;
   readonly topLevelDeclaration: VariableDeclaration | FunctionDeclaration | ClassDeclaration;
   readonly isExported: boolean;
+  readonly textSpanStart: number;
+  readonly textSpanEnd: number;
   /** Starts at 1 */
   readonly startLineNumber: number;
   /** Starts at 1 */
@@ -43,11 +45,13 @@ export default class TypeScriptProjects {
       });
       projectMappings.set(projectDirectory, project);
 
-      project
-        .getSourceFiles()
-        .forEach((sourceFile) =>
-          sourceFileMapping.set(relative(projectDirectory, sourceFile.getFilePath()), sourceFile)
+      project.getSourceFiles().forEach((sourceFile) => {
+        console.log(projectDirectory, sourceFile.getFilePath());
+        sourceFileMapping.set(
+          join(projectDirectory, relative(projectDirectory, sourceFile.getFilePath())),
+          sourceFile
         );
+      });
     });
 
     this.projectMappings = projectMappings;
@@ -71,6 +75,8 @@ export default class TypeScriptProjects {
         name,
         topLevelDeclaration,
         isExported: topLevelDeclaration.isExported(),
+        textSpanStart: topLevelDeclaration.getStart(),
+        textSpanEnd: topLevelDeclaration.getEnd(),
         startLineNumber: topLevelDeclaration.getStartLineNumber(),
         endLineNumber: topLevelDeclaration.getEndLineNumber(),
       });
