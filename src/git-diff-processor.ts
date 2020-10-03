@@ -1,6 +1,6 @@
 import { parsePatch } from 'diff';
 
-type ChangedFile = {
+export type ChangedFile = {
   readonly sourceFilePath: string;
   readonly changedLineIntervals: readonly (readonly [number, number])[];
 };

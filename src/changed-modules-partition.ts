@@ -6,12 +6,14 @@ type ProjectAndChangedPaths = {
 };
 
 /** Given a project path, partition changed files into with relativized module paths scoped with projects. */
-const partitionProjectChangedModulePaths = (
+const partitionProjectChangedModulePaths = <T>(
   projectPathsRelativeToRepositoryRoot: readonly string[],
-  allChangedModulePaths: readonly string[]
+  allChangedModules: readonly T[],
+  getPath: (changed: T) => string
 ): readonly ProjectAndChangedPaths[] => {
   const map = new Map<string, string[]>();
-  allChangedModulePaths.forEach((changedModulePath) => {
+  allChangedModules.forEach((changedModule) => {
+    const changedModulePath = getPath(changedModule);
     const projectRootPath = projectPathsRelativeToRepositoryRoot.find(
       (projectPath) => changedModulePath.startsWith(projectPath) || projectPath === '.'
     );
