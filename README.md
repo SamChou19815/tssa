@@ -4,9 +4,12 @@
 
 TypeScript Static Analyzer
 
-## Getting Started
+## Usage
 
 ```bash
 yarn add --dev @dev-sam/tssa
-yarn tssa path/1/to/ts/project/to/analyze path/2/to/ts/project/to/analyze -- $(git diff HEAD^ HEAD --name-only)
+# In Command Line
+git diff HEAD^ HEAD | yarn tssa path/1/to/ts/project/to/analyze path/2/to/ts/project/to/analyze
+# Inside a GitHub Action job triggered by pull request (tssa will auto-fetch PR diff)
+GITHUB_TOKEN=<token> GITHUB_PR_NUMBER=<PR number> yarn tssa path/1/to/ts/project/to/analyze path/2/to/ts/project/to/analyze
 ```
