@@ -1,4 +1,4 @@
-import { realpathSync } from 'fs';
+import { existsSync, realpathSync } from 'fs';
 import { dirname, join, relative, resolve } from 'path';
 
 import {
@@ -44,9 +44,9 @@ export default class TypeScriptProjects {
     const sourceFileMapping = new Map<string, SourceFile>();
 
     this.projectDirectories.forEach((projectDirectory) => {
-      const project = new Project({
-        tsConfigFilePath: join(projectDirectory, 'tsconfig.json'),
-      });
+      const tsConfigFilePath = join(projectDirectory, 'tsconfig.json');
+      if (!existsSync(tsConfigFilePath)) return;
+      const project = new Project({ tsConfigFilePath });
       projectMappings.set(projectDirectory, project);
 
       const projectSourceFilesList = project.getSourceFiles().map((sourceFile) => {
