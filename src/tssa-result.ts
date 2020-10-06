@@ -6,7 +6,15 @@ export type TssaResult = {
     readonly affectedFunctionChain: readonly SourceFileDefinedSymbol[];
   }[];
   /** A list of css affect chain. TODO: separate the result per file. */
-  readonly cssAnalysisResult: readonly string[];
+  readonly cssAnalysisResult: Record<string, string[]>;
+};
+
+const dependencyListToStringByFile = (list: Record<string, string[]>): string => {
+  let comment = '';
+  Object.keys(list).forEach((k) => {
+    comment += `Your changes to ${k} affect: \n ${list[k].map((it) => `> \`${it}\``).join('\n')};`;
+  });
+  return comment;
 };
 
 const dependencyListToString = (list: readonly string[]): string =>
@@ -29,11 +37,11 @@ ${dependencyListToString(affectedFunctionChain.map(sourceFileDefinedSymbolToStri
   );
 
   const cssAnalysisResultString =
-    cssAnalysisResult.length === 0
+    Object.keys(cssAnalysisResult).length === 0
       ? null
       : `Modules that your changes in css code may affect:
 
-${dependencyListToString(cssAnalysisResult)}`;
+${dependencyListToStringByFile(cssAnalysisResult)}`;
 
   const analysisResultStrings = [
     ...tsDependencyAnalysisResultStrings,

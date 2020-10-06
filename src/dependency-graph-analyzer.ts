@@ -48,24 +48,26 @@ const getDependencyChainForTSModule = (graph: Graph, tsModule: string): readonly
 export const getTopologicallyOrderedTransitiveDependencyChainFromTSModules = (
   graph: Graph,
   tsModules: readonly string[]
-): readonly string[] => {
-  const sorted: string[] = [];
-  const set = new Set<string>();
+): Record<string, string[]> => {
+  const map: Record<string, string[]> = {};
 
   tsModules.forEach((tsModule) => {
     const oneDependencyChainSorted = getDependencyChainForTSModule(graph, tsModule);
     oneDependencyChainSorted.forEach((moduleName) => {
-      if (!set.has(moduleName)) {
-        sorted.push(moduleName);
-        set.add(moduleName);
+      if (moduleName !== tsModule) {
+        if (map[tsModule] === undefined) {
+          map[tsModule] = [moduleName];
+        } else {
+          map[tsModule] = [...(map[tsModule] ?? []), moduleName];
+        }
       }
     });
   });
 
-  return sorted;
+  return map;
 };
 
 export const getGlobalTopologicallyOrderedTransitiveDependencyChain = (
   graph: Graph
-): readonly string[] =>
+): Record<string, string[]> =>
   getTopologicallyOrderedTransitiveDependencyChainFromTSModules(graph, Object.keys(graph));
