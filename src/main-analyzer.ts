@@ -57,7 +57,7 @@ const getTSSAResult = (projectPaths: readonly string[], diffString: string): Tss
     ),
   }));
 
-  let allCssDependencyChain: string[] = [];
+  let allCssDependencyChain: Record<string, string[]> = {};
 
   const forwardDependencyGraph = buildDependencyGraph(typescriptProjects, relevantProjectPaths);
   const reverseDependencyGraph = buildReverseDependencyGraphFromDependencyGraph(
@@ -73,9 +73,8 @@ const getTSSAResult = (projectPaths: readonly string[], diffString: string): Tss
       [changedCssPath]
     );
 
-    allCssDependencyChain.push(...forwardDependencyChain, ...reverseDependencyChain);
+    allCssDependencyChain = {...forwardDependencyChain, ...reverseDependencyChain};
   });
-  allCssDependencyChain = Array.from(new Set(allCssDependencyChain));
 
   return {
     typescriptAnalysisResult: changedTSFileReferenceAnalysisResult,
