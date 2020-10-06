@@ -73,7 +73,7 @@ const getTSSAResult = (projectPaths: readonly string[], diffString: string): Tss
       [changedCssPath]
     );
 
-    allCssDependencyChain = {...forwardDependencyChain, ...reverseDependencyChain};
+    allCssDependencyChain = { ...forwardDependencyChain, ...reverseDependencyChain };
   });
 
   return {

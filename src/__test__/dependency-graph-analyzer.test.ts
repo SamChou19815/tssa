@@ -17,7 +17,7 @@ it('getTopologicallyOrderedTransitiveDependencyChainFromTSModules works.', () =>
       { a: ['b', 'e'], d: ['b', 'c', 'a'], f: ['g'] },
       ['d', 'f']
     )
-  ).toEqual({"d": ["b", "c", "e", "a"], "f": ["g"]});
+  ).toEqual({ d: ['b', 'c', 'e', 'a'], f: ['g'] });
 });
 
 it('getGlobalTopologicallyOrderedTransitiveDependencyChain works.', () => {

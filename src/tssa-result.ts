@@ -10,10 +10,12 @@ export type TssaResult = {
 };
 
 const dependencyListToStringByFile = (list: Record<string, string[]>): string => {
-  let comment = "";
-  Object.keys(list).forEach((k) => comment += `Your changes to ${k} affect: \n ${list[k].map((it) => `> \`${it}\``).join('\n')};`)
+  let comment = '';
+  Object.keys(list).forEach((k) => {
+    comment += `Your changes to ${k} affect: \n ${list[k].map((it) => `> \`${it}\``).join('\n')};`;
+  });
   return comment;
-}
+};
 
 const dependencyListToString = (list: readonly string[]): string =>
   list.map((it) => `> \`${it}\``).join('\n');
