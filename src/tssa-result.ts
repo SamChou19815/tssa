@@ -1,10 +1,15 @@
-import type { SourceFileDefinedSymbol } from './typescript-projects';
+type AffectedFileWithSymbols = {
+  readonly filename: string;
+  readonly symbols: readonly string[];
+};
+
+type ChangedFileReport = {
+  readonly changedFilePath: string;
+  readonly affectedFunctionChain: readonly AffectedFileWithSymbols[];
+};
 
 export type TssaResult = {
-  readonly typescriptAnalysisResult: readonly {
-    readonly changedFilePath: string;
-    readonly affectedFunctionChain: readonly SourceFileDefinedSymbol[];
-  }[];
+  readonly typescriptAnalysisResult: readonly ChangedFileReport[];
   /** A list of css affect chain. TODO: separate the result per file. */
   readonly cssAnalysisResult: Record<string, string[]>;
 };
@@ -20,8 +25,8 @@ const dependencyListToStringByFile = (list: Record<string, string[]>): string =>
 const dependencyListToString = (list: readonly string[]): string =>
   list.map((it) => `> \`${it}\``).join('\n');
 
-const sourceFileDefinedSymbolToString = (symbol: SourceFileDefinedSymbol): string =>
-  `${symbol.sourceFilePath} > ${symbol.name}`;
+const affectedFileWithSymbolsToString = ({ filename, symbols }: AffectedFileWithSymbols): string =>
+  `${filename} > ${symbols.join(', ')}`;
 
 export const tssaResultToString = ({
   typescriptAnalysisResult,
@@ -32,7 +37,7 @@ export const tssaResultToString = ({
       if (affectedFunctionChain.length === 0) return null;
       return `Your changes in ${changedFilePath} may directly or indirectly affect:
 
-${dependencyListToString(affectedFunctionChain.map(sourceFileDefinedSymbolToString))}`;
+${dependencyListToString(affectedFunctionChain.map(affectedFileWithSymbolsToString))}`;
     }
   );
 

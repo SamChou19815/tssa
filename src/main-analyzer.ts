@@ -48,14 +48,30 @@ const getTSSAResult = (projectPaths: readonly string[], diffString: string): Tss
   );
   const typescriptProjects = new TypeScriptProjects(projectPaths);
 
-  const changedTSFileReferenceAnalysisResult = changedTSFiles.map((changedFile) => ({
-    changedFilePath: changedFile.sourceFilePath,
-    affectedFunctionChain: buildFineGrainedDependencyChain(
+  const changedTSFileReferenceAnalysisResult = changedTSFiles.map((changedFile) => {
+    const partitionedFunctionChain = new Map<string, string[]>();
+    buildFineGrainedDependencyChain(
       typescriptProjects,
       changedFile.sourceFilePath,
       changedFile.changedLineIntervals
-    ),
-  }));
+    ).forEach((symbolWithFilename) => {
+      const symbolList = partitionedFunctionChain.get(symbolWithFilename.sourceFilePath);
+      if (symbolList == null) {
+        partitionedFunctionChain.set(symbolWithFilename.sourceFilePath, [symbolWithFilename.name]);
+      } else {
+        symbolList.push(symbolWithFilename.name);
+      }
+    });
+    return {
+      changedFilePath: changedFile.sourceFilePath,
+      affectedFunctionChain: Array.from(partitionedFunctionChain.entries()).map(
+        ([filename, symbols]) => ({
+          filename,
+          symbols,
+        })
+      ),
+    };
+  });
 
   let allCssDependencyChain: Record<string, string[]> = {};
 
