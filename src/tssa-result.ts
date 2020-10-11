@@ -17,7 +17,9 @@ export type TssaResult = {
 const dependencyListToStringByFile = (list: Record<string, string[]>): string => {
   let comment = '';
   Object.keys(list).forEach((k) => {
-    comment += `Your changes to ${k} affect: \n ${list[k].map((it) => `> \`${it}\``).join('\n')};`;
+    comment += `Your changes to \`${k}\` affect: \n ${list[k]
+      .map((it) => `> \`${it}\``)
+      .join('\n')};`;
   });
   return comment;
 };
@@ -35,7 +37,7 @@ export const tssaResultToString = ({
   const tsDependencyAnalysisResultStrings = typescriptAnalysisResult.map(
     ({ changedFilePath, affectedFunctionChain }) => {
       if (affectedFunctionChain.length === 0) return null;
-      return `Your changes in ${changedFilePath} may directly or indirectly affect:
+      return `Your changes in \`${changedFilePath}\` may directly or indirectly affect:
 
 ${dependencyListToString(affectedFunctionChain.map(affectedFileWithSymbolsToString))}`;
     }
