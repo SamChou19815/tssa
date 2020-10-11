@@ -67,7 +67,7 @@ const getTSSAResult = (projectPaths: readonly string[], diffString: string): Tss
       affectedFunctionChain: Array.from(partitionedFunctionChain.entries()).map(
         ([filename, symbols]) => ({
           filename,
-          symbols,
+          symbols: symbols.sort((a, b) => a.localeCompare(b)),
         })
       ),
     };
