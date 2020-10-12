@@ -51,5 +51,11 @@
   },
   "eslintConfig": {
     "extends": "@dev-sam/common"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": [
+      "/dist/"
+    ]
   }
 }
