@@ -29,6 +29,14 @@ const getTSSAResult = (projectPaths: readonly string[], diffString: string): Tss
       normalizedPath.endsWith('.cjs') ||
       normalizedPath.endsWith('.jsx')
     ) {
+      if (
+        normalizedPath.includes('__test__') ||
+        normalizedPath.includes('__tests__') ||
+        normalizedPath.includes('.test.') ||
+        normalizedPath.includes('.tests.')
+      ) {
+        return;
+      }
       changedTSFiles.push({ ...changedFile, sourceFilePath: normalizedPath });
     }
   });
