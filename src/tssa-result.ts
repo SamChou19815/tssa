@@ -19,7 +19,7 @@ const dependencyListToStringByFile = (list: Record<string, string[]>): string =>
   Object.keys(list).forEach((k) => {
     comment += `Your changes to \`${k}\` affect: \n ${list[k]
       .map((it) => `> \`${it}\``)
-      .join('\n')};`;
+      .join('\n')}`;
   });
   return comment;
 };
