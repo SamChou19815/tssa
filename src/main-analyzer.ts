@@ -6,8 +6,39 @@ import buildFineGrainedDependencyTree, {
   FileReferenceTree,
 } from './fine-grained-dependency-tree-builder';
 import processGitDiffString, { ChangedFile } from './git-diff-processor';
-import type { TssaResult } from './tssa-result';
+import type { FileChangeImpact, TssaResult } from './tssa-result';
 import TypeScriptProjects from './typescript-projects';
+
+const getDivergingPoint = (tree: FileReferenceTree): readonly string[] | null => {
+  if (tree.children.length === 0) return null;
+  if (tree.children.length >= 2) return tree.children.map((it) => it.value);
+  return getDivergingPoint(tree.children[0]);
+};
+
+const getFileChangeImpactResult = (tree: FileReferenceTree): FileChangeImpact => {
+  const divergingPoint = getDivergingPoint(tree);
+  if (divergingPoint == null) {
+    return {
+      type: 'DIRECTLY_AFFECT_ONLY',
+      filename: tree.value,
+      affected: [tree.children[0].value],
+    };
+  }
+  const directChildren = tree.children.map((it) => it.value);
+  if (directChildren.length > 1) {
+    return {
+      type: 'DIRECTLY_AFFECT_ONLY',
+      filename: tree.value,
+      affected: directChildren,
+    };
+  }
+  return {
+    type: 'BOTH_DIRECT_AND_MULTIPLE_INDIRECT',
+    filename: tree.value,
+    directlyAffected: directChildren[0],
+    indirectlyAffected: divergingPoint,
+  };
+};
 
 /** Run all available analysis on the change. */
 const getTSSAResult = (projectPaths: readonly string[], diffString: string): TssaResult => {
@@ -44,7 +75,10 @@ const getTSSAResult = (projectPaths: readonly string[], diffString: string): Tss
     )
   );
 
-  return changedTSFileReferenceAnalysisResult.filter((it): it is FileReferenceTree => it != null);
+  return changedTSFileReferenceAnalysisResult
+    .filter((it): it is FileReferenceTree => it != null)
+    .filter((it) => it.children.length > 0)
+    .map(getFileChangeImpactResult);
 };
 
 export default getTSSAResult;
